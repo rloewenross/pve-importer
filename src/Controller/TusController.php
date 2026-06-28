@@ -52,6 +52,8 @@ class TusHandler {
             $session->set('import-status', 'error');
             $session->set('import-error', $createVmResponse->toArray()['error']);
             return;
+        } else {
+            $session->set('import-status', 'ok');
         }
         
         $this->bus->dispatch(new DiskImportMessage($newVmid, $filePath, $client->pveStorage));
