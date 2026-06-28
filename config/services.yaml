@@ -21,3 +21,24 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\PveClientFactory:
+        arguments:
+            $pveStorage: '%env(PROXMOX_STORAGE)%'
+
+    TusPhp\Cache\FileStore:
+        class: TusPhp\Cache\FileStore
+        arguments:
+            $cacheDir: '%kernel.project_dir%/var/cache/'
+    
+    TusPhp\Tus\Server:
+        class: TusPhp\Tus\Server
+        arguments:
+            $cacheAdapter: '@TusPhp\Cache\FileStore'
+        calls:
+            - method: setUploadDir
+              arguments:
+                - '%env(UPLOAD_DIRECTORY)%'
+            - method: setApiPath
+              arguments:
+                - '/tus'

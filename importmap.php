@@ -25,4 +25,22 @@ return [
     '@hotwired/turbo' => [
         'version' => '8.0.23',
     ],
+    'just-extend' => [
+        'version' => '5.1.1',
+    ],
+    'tus-js-client' => [
+        'version' => '4.3.1',
+    ],
+    'js-base64' => [
+        'version' => '3.7.7',
+    ],
+    'url-parse' => [
+        'version' => '1.5.10',
+    ],
+    'requires-port' => [
+        'version' => '1.0.0',
+    ],
+    'querystringify' => [
+        'version' => '2.2.0',
+    ],
 ];

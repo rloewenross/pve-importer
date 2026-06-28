@@ -1,3 +1,23 @@
 body {
-    background-color: skyblue;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(
+        135deg,
+        #111827,
+        #1f2937
+    );
+}
+
+.content {
+    width: 100%;
+    max-width: 400px;
+    padding: 3rem;
+    background: white;
+}
+
+h1 {
+    text-align: center;
 }

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block stylesheets %}
+   <link rel="stylesheet" href="{{ asset('styles/login.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1>Log in to PVE-Importer</h1>
+    <form class="login-form" method="post">
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+        <button type="submit">Log in</button>
+    </form>
+{% endblock %}

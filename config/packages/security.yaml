@@ -5,7 +5,9 @@ security:
 
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            id: App\Security\UserProvider
 
     firewalls:
         dev:
@@ -14,7 +16,10 @@ security:
             security: false
         main:
             lazy: true
-            provider: users_in_memory
+            provider: app_user_provider
+            custom_authenticators:
+                - App\Security\PveAuthenticator
+            entry_point: App\Security\AuthenticationEntryPoint
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -24,8 +29,8 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
