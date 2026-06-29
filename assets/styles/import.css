@@ -1,4 +1,5 @@
 .file-input-container {
+    font-family: inherit;
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
