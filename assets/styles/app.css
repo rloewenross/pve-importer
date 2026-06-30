@@ -66,3 +66,10 @@ button:hover, input[type="file"]::file-selector-button:hover {
     background-color: var(--success);
     border: var(--success);
 }
+
+progress {
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    color: var(--border);
+    background-color: var(--background);
+}
