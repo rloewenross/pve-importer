@@ -5,3 +5,10 @@
     gap: 0.2rem;
     align-items: flex-start;
 }
+
+#message {
+    display: none;
+    border: 2px solid;
+    border-radius: 4px;
+    color: var(--background);
+}

@@ -6,6 +6,8 @@
     --primary-hover: #395BC7;
     --border: #BDD1FF;
     --border-focus: #87A5EF;
+    --error: #E5484D;
+    --success: #30A46C;
 }
 
 body {
@@ -53,4 +55,14 @@ button, input[type="file"]::file-selector-button {
 button:hover, input[type="file"]::file-selector-button:hover {
     background-color: var(--primary-hover);
     border-color: var(--primary-hover);
+}
+
+.error {
+    background-color: var(--error);
+    border-color: var(--error);
+}
+
+.success {
+    background-color: var(--success);
+    border: var(--success);
 }

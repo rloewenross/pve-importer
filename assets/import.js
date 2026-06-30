@@ -1,9 +1,11 @@
 import * as tus from 'tus-js-client';
 
 var fileInput = document.getElementById("file-input");
+const endpoint = fileInput.getAttribute("url");
 var message = document.getElementById("message");
 var fileProgress = document.getElementById("file-progress");
 var uploadStatus = document.getElementById("upload-status");
+const importStatusEndpoint = document.getElementById("import-status").getAttribute("url");
 
 // Source - https://stackoverflow.com/a/18650828
 // Posted by anon, modified by community. See post 'Timeline' for change history
@@ -21,6 +23,18 @@ function formatBytes(bytes, decimals = 2) {
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
 }
 
+function showError(s) {
+    message.textContent = s;
+    message.classList.add("error");
+    message.style.display = "block";
+}
+
+function showSuccess(s) {
+    message.textContent = s;
+    message.classList.add("success");
+    message.style.display = "block";
+}
+
 document.getElementById("file-submit").addEventListener("click", function() {
     if (fileInput.files.length != 1) {
         message.textContent = "Must submit 1 file";
@@ -30,7 +44,6 @@ document.getElementById("file-submit").addEventListener("click", function() {
     
     var file = fileInput.files[0];
     
-    const endpoint = fileInput.getAttribute("url");
     var upload = new tus.Upload(file, {
         endpoint: endpoint,
         retryDelays: [0, 3000, 5000, 10000, 20000],
@@ -40,7 +53,7 @@ document.getElementById("file-submit").addEventListener("click", function() {
         },
 
         onError: function (error) {
-          message.textContent = error;
+          showError(error);
         },
         
         onProgress: function (bytesUploaded, bytesTotal) {
@@ -49,6 +62,20 @@ document.getElementById("file-submit").addEventListener("click", function() {
             fileProgress.value = bytesUploaded;
             
             uploadStatus.textContent = formatBytes(bytesUploaded) + '/' + formatBytes(bytesTotal);
+        },
+        
+        onSuccess: function () {
+            fetch(importStatusEndpoint)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (status) {
+                if (status.status == "ok") {
+                    showSuccess("File uploaded successfully! Import has started")
+                } else if (status.status == "error") {
+                    showError(status.message)
+                }
+            });
         },
     });
     
