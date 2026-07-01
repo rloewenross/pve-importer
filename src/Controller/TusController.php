@@ -6,22 +6,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Symfony\Component\Process\Process;
+use Symfony\Component\Messenger\MessageBusInterface;
 use TusPhp\Tus\Server as TusServer;
 use TusPhp\Events\TusEvent;
 use App\PveClientFactory;
+use App\Message\DiskImportMessage;
 
 class TusController extends AbstractController {
     public function __construct(
         private SluggerInterface $slugger,
         private PveClientFactory $pveClientFactory,
+        private MessageBusInterface $bus,
     ) {}
 
     #[Route('/tus/', name: 'tus_post')]
     #[Route('/tus/{token}', name: 'tus', requirements: [ 'token' => '.+' ])]
     public function tus(Request $request, TusServer $server): Response {
-        $tusHandler = new TusHandler($this->slugger, $request, $this->pveClientFactory);
+        $tusHandler = new TusHandler($this->slugger, $request, $this->pveClientFactory, $this->bus);
         $server->event()->addListener('tus-server.upload.complete', [$tusHandler, 'handleComplete']);
         return $server->serve();
     }
@@ -32,6 +33,7 @@ class TusHandler {
         private SluggerInterface $slugger,
         private Request $request,
         private PveClientFactory $pveClientFactory,
+        private MessageBusInterface $bus,
     ) {}
 
     public function handleComplete(TusEvent $event) {
