@@ -47,7 +47,7 @@ class TusHandler {
         $nodeName = strtok(gethostname(), '.');
         $newVmid = $client->getFreeVmid();
         
-        $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid ]);
+        $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => basename($oldFilePath) ]);
         if ($createVmResponse->getStatusCode() != 200) {
             $session->set('import-status', 'error');
             $session->set('import-error', $createVmResponse->toArray()['error']);
