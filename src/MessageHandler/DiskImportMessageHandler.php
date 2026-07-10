@@ -10,7 +10,7 @@ use Symfony\Component\Filesystem\Filesystem;
 #[AsMessageHandler]
 class DiskImportMessageHandler {
     public function __invoke(DiskImportMessage $message) {
-        $process = new Process(['sudo', '-n', '/usr/sbin/qm', 'disk', 'import', $message->vmId, $message->filePath, $message->pveStorage, '--target-disk', 'scsi0']);
+        $process = new Process(['sudo', '-n', '/usr/sbin/qm', 'disk', 'import', $message->vmId, $message->filePath, $message->client->pveStorage, '--target-disk', 'scsi0']);
         $process->run();
         
         $filesystem = new Filesystem();

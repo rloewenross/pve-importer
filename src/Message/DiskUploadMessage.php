@@ -2,15 +2,14 @@
 namespace App\Message;
 
 use Symfony\Component\Messenger\Attribute\AsMessage;
+use TusPhp\Events\TusEvent;
 use App\PveClient;
 
 #[AsMessage('async')]
-class DiskImportMessage {
+class DiskUploadMessage {
     public function __construct(
-        public string $vmId,
-        public string $filePath,
-        public PveClient $client,
-        public int $importStatusId,
+        private TusEvent $event,
+        private PveClient $client,
     ) {}
 }
 ?>
