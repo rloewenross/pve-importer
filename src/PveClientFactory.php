@@ -4,6 +4,7 @@ namespace App;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\PveClient;
+use App\PveClientInfo;
 
 class PveClientFactory {
     private HttpClientInterface $httpClient;
@@ -19,17 +20,25 @@ class PveClientFactory {
         ]);
     }
     
-    public function newPveClient(string $username, string $password) {
+    public function newPveClient(string $username, string $password): PveClient {
         $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->login($username, $password);
         return $client;
     }
     
-    public function fromSession(SessionInterface $session) {
+    public function fromSession(SessionInterface $session): PveClient {
         $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->setTicket($session->get('pve-ticket'));
         $client->setCsrf($session->get('pve-csrf'));
         $client->username = $session->get('pve-username');
+        return $client;
+    }
+    
+    public function fromInfo(PveClientInfo $info): PveClient {
+        $client = newPveClient($this->httpClient, $this->pveStorage);
+        $client->setTicket($info->ticket);
+        $client->setCsrf($info->csrf);
+        $client->username = $info->username;
         return $client;
     }
 }

@@ -6,6 +6,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\PveClientInfo;
 
 class PveClient {
     private string $ticket;
@@ -90,6 +91,10 @@ class PveClient {
         }
         
         return $newid;
+    }
+    
+    public function toInfo(): PveClientInfo {
+        return new PveClientInfo($this->ticket, $this->csrf, $this->username, $this->pveStorage);
     }
 }
 ?>
