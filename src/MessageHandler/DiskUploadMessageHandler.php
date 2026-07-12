@@ -16,9 +16,12 @@ class DiskUploadMessageHandler {
         private MessageBusInterface $bus,
         private SluggerInterface $slugger,
         private EntityManagerInterface $entityManager,
+        private PveClientFactory $pveClientFactory,
     ) {}
 
     public function __invoke(DiskUploadMessage $message) {
+        $client = $this->pveClientFactory->fromInfo($message->clientInfo);
+
         $oldFilePath = $message->event->getFile()->getFilePath();
         $safeFileName = $this->slugger->slug(basename($oldFilePath));
         $fileName = $safeFileName . '-' . uniqid();
@@ -27,12 +30,12 @@ class DiskUploadMessageHandler {
         rename($oldFilePath, $filePath);
         
         $nodeName = strtok(gethostname(), '.');
-        $newVmid = $message->client->getFreeVmid();
+        $newVmid = $client->getFreeVmid();
         
         $importStatus = new ImportStatus();
         $importStatus->setError(false);
         
-        $createVmResponse = $message->client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => basename($oldFilePath) ]);
+        $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => basename($oldFilePath) ]);
         if ($createVmResponse->getStatusCode() != 200) {
             $importStatus->setError(true);
             $importStatus->setErrorMessage($createVmResponse->toArray()['data']['error']);
@@ -45,7 +48,7 @@ class DiskUploadMessageHandler {
         $this->entityManager->flush();
         
         if (!$importStatus->isError()) {
-            $this->bus->dispatch(new DiskImportMessage($newVmid, $filePath, $client, $importStatus->getId()));
+            $this->bus->dispatch(new DiskImportMessage($newVmid, $filePath, $client->toInfo(), $importStatus->getId()));
         }
     }
 }

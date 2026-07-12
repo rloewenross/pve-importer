@@ -2,14 +2,14 @@
 namespace App\Message;
 
 use Symfony\Component\Messenger\Attribute\AsMessage;
-use App\PveClient;
+use App\PveClientInfo;
 
 #[AsMessage('async')]
 class DiskImportMessage {
     public function __construct(
         public string $vmId,
         public string $filePath,
-        public PveClient $client,
+        public PveClientInfo $clientInfo,
         public int $importStatusId,
     ) {}
 }
