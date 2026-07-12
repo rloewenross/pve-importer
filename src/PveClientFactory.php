@@ -35,7 +35,7 @@ class PveClientFactory {
     }
     
     public function fromInfo(PveClientInfo $info): PveClient {
-        $client = newPveClient($this->httpClient, $this->pveStorage);
+        $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->setTicket($info->ticket);
         $client->setCsrf($info->csrf);
         $client->username = $info->username;
