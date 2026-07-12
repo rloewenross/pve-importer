@@ -8,8 +8,8 @@ use App\PveClientInfo;
 #[AsMessage('async')]
 class DiskUploadMessage {
     public function __construct(
-        private TusEvent $event,
-        private PveClientInfo $clientInfo,
+        public TusEvent $event,
+        public PveClientInfo $clientInfo,
     ) {}
 }
 ?>
