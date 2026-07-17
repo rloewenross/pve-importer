@@ -42,7 +42,7 @@ class DiskUploadMessageHandler {
         }
         
         $this->entityManager->persist($importStatus);
-        $userInfo = $this->entityManager->getRepository(UserInfo::class)->findOneBy(['user_id' => $message->username]);
+        $userInfo = $this->entityManager->getRepository(UserInfo::class)->findOneBy(['user_id' => $message->clientInfo->username]);
         $userInfo->appendImportStatusId($importStatus->getId());
         
         $this->entityManager->flush();
