@@ -25,7 +25,14 @@ class TusController extends AbstractController {
         $client = $this->pveClientFactory->fromSession($request->getSession());
         $bus = $this->bus;
         $server->event()->addListener('tus-server.upload.complete', function (TusEvent $event) use ($bus, $client) {
-            $bus->dispatch(new DiskUploadMessage($event, $client->toInfo()));
+            $oldFilePath = $message->event->getFile()->getFilePath();
+            $safeFileName = $this->slugger->slug(basename($oldFilePath));
+            $fileName = $safeFileName . '-' . uniqid();
+            $filePath = dirname($oldFilePath) . '/' . $fileName;
+            rename($oldFilePath, $filePath);
+            $vmName = basename($oldFilePath);
+
+            $bus->dispatch(new DiskUploadMessage($filePath, $vmName, $client->toInfo()));
         });
         return $server->serve();
     }
