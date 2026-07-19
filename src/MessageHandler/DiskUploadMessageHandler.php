@@ -3,44 +3,38 @@ namespace App\MessageHandler;
 
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use App\PveClientFactory;
 use App\Message\DiskUploadMessage;
+use App\Message\DiskImportMessage;
 use App\Entity\ImportStatus;
-use App\Entity\UserInfo;
 
 #[AsMessageHandler]
 class DiskUploadMessageHandler {
     public function __construct(
         private MessageBusInterface $bus,
-        private SluggerInterface $slugger,
         private EntityManagerInterface $entityManager,
         private PveClientFactory $pveClientFactory,
     ) {}
 
-    public function __invoke(DiskUploadMessage $message) {
+    public function __invoke(DiskUploadMessage $message): void {
         $client = $this->pveClientFactory->fromInfo($message->clientInfo);
         
         $nodeName = strtok(gethostname(), '.');
         $newVmid = $client->getFreeVmid();
         
-        $importStatus = new ImportStatus();
-        $importStatus->setError(false);
+        $importStatus = new ImportStatus($message->clientInfo->username);
         
         $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => $message->vmName ]);
         if ($createVmResponse->getStatusCode() != 200) {
-            $importStatus->setError(true);
+            $importStatus->setErrorOccurred(true);
             $importStatus->setErrorMessage($createVmResponse->toArray()['data']['error']);
         }
         
         $this->entityManager->persist($importStatus);
-        $userInfo = $this->entityManager->getRepository(UserInfo::class)->findOneBy(['user_id' => $message->clientInfo->username]);
-        $userInfo->appendImportStatusId($importStatus->getId());
-        
         $this->entityManager->flush();
         
-        if (!$importStatus->isError()) {
+        if (!$importStatus->isErrorOccurred()) {
             $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $importStatus->getId()));
         }
     }
