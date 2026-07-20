@@ -19,7 +19,7 @@ class TusController extends AbstractController {
         private SluggerInterface $slugger,
     ) {}
 
-    #[Route('/tus/', name: 'tus_post')]
+    #[Route('/tus', name: 'tus_post')]
     #[Route('/tus/{token}', name: 'tus', requirements: [ 'token' => '.+' ])]
     public function tus(Request $request, TusServer $server): Response {
         $client = $this->pveClientFactory->fromSession($request->getSession());
