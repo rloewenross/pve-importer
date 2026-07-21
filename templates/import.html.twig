@@ -11,13 +11,15 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Import</h1>
-    <div class="file-input-container" >
-        <label for="file-input">Upload VM image</label>
-        <input type="file" id="file-input" url="{{ path('tus_post') }}">
-        <button type="button" id="file-submit">Submit</button>
-        <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
-        <p id="message"></p>
+    <div class="content">
+        <h1>Import</h1>
+        <div class="file-input-container" >
+            <label for="file-input">Upload VM image</label>
+            <input type="file" id="file-input" url="{{ path('tus_post') }}">
+            <button type="button" id="file-submit">Submit</button>
+            <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
+            <p id="message"></p>
+        </div>
+        <div id="import-status" style="display: none;" url="{{ path('import_status') }}"></div>
     </div>
-    <div id="import-status" style="display: none;" url="{{ path('import_status') }}"></div>
 {% endblock %}
