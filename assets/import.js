@@ -173,3 +173,5 @@ function loadImportStatus() {
         setTimeout(loadImportStatus, 5000);
     });
 }
+
+loadImportStatus();
