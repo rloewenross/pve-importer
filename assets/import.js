@@ -65,19 +65,111 @@ document.getElementById("file-submit").addEventListener("click", function() {
         },
         
         onSuccess: function () {
-            fetch(importStatusEndpoint)
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (status) {
-                if (status.status == "ok") {
-                    showSuccess("File uploaded successfully! Import has started")
-                } else if (status.status == "error") {
-                    showError(status.message)
-                }
-            });
+            showSuccess("File uploaded successfully! Import has started")
         },
     });
     
     upload.start();
 });
+
+var importStatusPlaceholder = document.getElementById("import-status-placeholder");
+var importStatusList = document.getElementById("import-status-list");
+const statusEndpoint = importStatusList.getAttribute("url");
+
+function createImportCard(statusInfo) {
+    var card = document.createElement("div");
+    card.className = "import-card";
+    
+    var header = document.createElement("div");
+    header.className = "import-card-header";
+    
+    var title = document.createElement("p");
+    title.className = "import-card-title";
+    title.textContent = statusInfo.vm_name;
+
+    var status = document.createElement("p");
+    status.className = "import-card-status";
+    if (statusInfo.complete) {
+        status.textContent = "Done";
+        status.classList.add("success");
+    } else if (statusInfo.error_occurred) {
+        status.textContent = "Failed";
+        status.classList.add("error");
+    } else {
+        status.textContent = "Importing";
+    }
+    
+    header.append(title, status);
+    
+    const dateCreated = new Date(statusInfo.date_created * 1000);
+    var date = document.createElement("p");
+    date.className = "import-card-date";
+    date.textContent = dateCreated.toDateString();
+
+    var vmid = document.createElement("p");
+    vmid.className = "import-card-vmid";
+    vmid.textContent = statusInfo.vmid;
+    
+    if (statusInfo.error_occurred) {
+        var message = document.createElement("p");
+        message.className = "import-card-message";
+        message.textContent = statusInfo.error_message;
+    }
+    
+    if (statusInfo.error_occurred) {
+        card.append(header, date, vmid, message);
+    } else {
+        card.append(header, date, vmid);
+    }
+    
+    return card;
+}
+
+var finishedStatusList = [];
+
+function loadImportStatus() {
+    fetch(statusEndpoint)
+    .then(function (response) {
+        return response.json();
+    })
+    .then(function (data) {
+        const completeData = data.concat(finishedStatusList);
+
+        if (completeData.length === 0) {
+            importStatusPlaceholder.textContent = "No imports in progress";
+
+            importStatusList.hidden = true;
+            importStatusPlaceholder.hidden = false;
+        } else {
+            completeData.sort(function (a, b) {
+                return a.date_created > b.date_created ? -1 : 1;
+            });
+
+            const fragment = document.createDocumentFragment();
+            for (const status of completeData) {
+                fragment.appendChild(createImportCard(status));
+            }
+            importStatusList.replaceChildren(fragment);
+
+            importStatusPlaceholder.hidden = true;
+            importStatusList.hidden = false;
+            
+            for (const status of data) {
+                if (status.error_occurred || status.complete) {
+                    finishedStatusList.push(status);
+                }
+            }
+        }
+    })
+    .catch(function (e) {
+        importStatusPlaceholder.textContent = "Unable to load imports";
+
+        importStatusList.hidden = true;
+        importStatusPlaceholder.hidden = false;
+        
+        console.error("Unable to load import statuses:", e);
+    })
+    .finally(function () {
+        setTimeout(loadImportStatus, 5000);
+    });
+}

@@ -2,7 +2,6 @@
 namespace App\Message;
 
 use Symfony\Component\Messenger\Attribute\AsMessage;
-use TusPhp\Events\TusEvent;
 use App\PveClientInfo;
 
 #[AsMessage('async')]

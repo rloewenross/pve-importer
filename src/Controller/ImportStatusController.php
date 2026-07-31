@@ -5,21 +5,38 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\ImportStatus;
+use App\Security\PveUser;
 
 class ImportStatusController extends AbstractController {
     #[Route('/import_status', methods: ['GET'], name: 'import_status')]
-    public function status(Request $request): JsonResponse {
-        $session = $request->getSession();
-        $status = $session->get('import-status') ?? 'ok';
-        if ($status == 'error') {
-            $message = $session->get('import-error');
-        } else {
-            $message = '';
+    public function status(EntityManagerInterface $entityManager, #[CurrentUser] PveUser $user, Request $request): JsonResponse {
+        $importStatusRepository = $entityManager->getRepository(ImportStatus::class);
+        $statusList =  $importStatusRepository->findBy([ 'pve_user_id' => $user->getUsername() ]);
+        $responseArray = \array_map(
+            function ($status) {
+                return [
+                    'vm_name' => $status->getVmName(),
+                    'vmid' => $status->getVmid(),
+                    'error_occurred' => $status->isErrorOccurred(),
+                    'error_message' => $status->getErrorMessage(),
+                    'complete' => $status->isComplete(),
+                    'date_created' => $status->getDateCreated()->getTimestamp(),
+                ];
+            },
+            $statusList
+        );
+        
+        foreach ($statusList as $status) {
+            if ($status->isComplete() || $status->isErrorOccurred()) { # since the status is done and we are giving it to the client we can remove it
+                $entityManager->remove($status);
+            }
         }
-        return new JsonResponse([
-            'status' => $status,
-            'message' => $message,
-        ]);
+        $entityManager->flush();
+
+        return new JsonResponse($responseArray);
     }
 }
 ?>

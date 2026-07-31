@@ -1,5 +1,6 @@
 :root {
     --text: #1E1F24;
+    --secondary-text: #62636C;
     --background: #EFF0F3;
     --surface: #FDFDFE;
     --primary: #3D63DD;
@@ -72,4 +73,14 @@ progress {
     border-radius: 4px;
     color: var(--border);
     background-color: var(--background);
+}
+
+#spinner {
+    border: 3px solid #f3f3f3;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 3px solid #555;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
 }

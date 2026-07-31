@@ -11,15 +11,24 @@
 {% endblock %}
 
 {% block body %}
-    <div class="content">
-        <h1>Import</h1>
-        <div class="file-input-container" >
-            <label for="file-input">Upload VM image</label>
-            <input type="file" id="file-input" url="{{ path('tus_post') }}">
-            <button type="button" id="file-submit">Submit</button>
-            <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
-            <p id="message"></p>
+    <div class="import-layout">
+        <div class="content">
+            <h1>Import</h1>
+            <div class="file-input-container" >
+                <label for="file-input">Upload VM image</label>
+                <input type="file" id="file-input" url="{{ path('tus_post') }}">
+                <button type="button" id="file-submit">Submit</button>
+                <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
+                <p id="message"></p>
+            </div>
+            <div id="import-status" style="display: none;" url="{{ path('import_status') }}"></div>
         </div>
-        <div id="import-status" style="display: none;" url="{{ path('import_status') }}"></div>
+        
+        <div class="content" id="import-status-container">
+            <div id="import-status-placeholder">
+                <div class="spinner"></div>
+            </div>
+            <div id="import-status-list" url="{{ path('import_status') }}" hidden></div>
+        </div>
     </div>
 {% endblock %}

@@ -23,7 +23,7 @@ class DiskUploadMessageHandler {
         $nodeName = strtok(gethostname(), '.');
         $newVmid = $client->getFreeVmid();
         
-        $importStatus = new ImportStatus($message->clientInfo->username);
+        $importStatus = new ImportStatus($message->clientInfo->username, $message->vmName, $newVmid);
         
         $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => $message->vmName ]);
         if ($createVmResponse->getStatusCode() != 200) {
