@@ -75,7 +75,7 @@ progress {
     background-color: var(--background);
 }
 
-#spinner {
+.spinner {
     border: 3px solid #f3f3f3;
     -webkit-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
@@ -83,4 +83,14 @@ progress {
     border-radius: 50%;
     width: 30px;
     height: 30px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    
+    to {
+        transform: rotate(360deg);
+    }
 }
