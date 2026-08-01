@@ -147,6 +147,7 @@ function loadImportStatus() {
             setImportStatusPlaceholderText("No imports in progress");
 
             importStatusList.hidden = true;
+            importStatusList.replaceChildren();
             importStatusPlaceholder.hidden = false;
         } else {
             completeData.sort(function (a, b) {
@@ -160,6 +161,7 @@ function loadImportStatus() {
             importStatusList.replaceChildren(fragment);
 
             importStatusPlaceholder.hidden = true;
+            importStatusPlaceholder.replaceChildren();
             importStatusList.hidden = false;
             
             for (const status of data) {
@@ -173,6 +175,7 @@ function loadImportStatus() {
         setImportStatusPlaceholderText("Unable to load imports");
 
         importStatusList.hidden = true;
+        importStatusList.replaceChildren();
         importStatusPlaceholder.hidden = false;
         
         console.error("Unable to load import statuses:", e);
