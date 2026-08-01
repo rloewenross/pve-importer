@@ -24,6 +24,8 @@
 
 .content {
     flex: 1;
+    
+    min-width: 3rem;
 }
 
 #import-status-container {
