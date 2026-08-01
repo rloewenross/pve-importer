@@ -28,13 +28,9 @@
 
 #import-status-container {
     position: relative;
-
-    width: 100%;
-    max-width: 400px;
     
     flex: 1;
     
-    min-height: 0;
     overflow-y: auto;
 }
 
