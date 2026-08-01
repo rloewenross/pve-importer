@@ -76,6 +76,14 @@ var importStatusPlaceholder = document.getElementById("import-status-placeholder
 var importStatusList = document.getElementById("import-status-list");
 const statusEndpoint = importStatusList.getAttribute("url");
 
+function setImportStatusPlaceholderText(s) {
+    var text = document.createElement("p");
+    text.className = "import-status-placeholder-text";
+    text.textContent = s;
+    
+    importStatusPlaceholder.replaceChildren(text);
+}
+
 function createImportCard(statusInfo) {
     var card = document.createElement("div");
     card.className = "import-card";
@@ -136,7 +144,7 @@ function loadImportStatus() {
         const completeData = data.concat(finishedStatusList);
 
         if (completeData.length === 0) {
-            importStatusPlaceholder.textContent = "No imports in progress";
+            setImportStatusPlaceholderText("No imports in progress");
 
             importStatusList.hidden = true;
             importStatusPlaceholder.hidden = false;
@@ -162,7 +170,7 @@ function loadImportStatus() {
         }
     })
     .catch(function (e) {
-        importStatusPlaceholder.textContent = "Unable to load imports";
+        setImportStatusPlaceholderText("Unable to load imports");
 
         importStatusList.hidden = true;
         importStatusPlaceholder.hidden = false;
