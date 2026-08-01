@@ -17,10 +17,25 @@
     display: flex;
     flex-direction: row;
     gap: 5rem;
+    
+    display: flex;
+    align-items: stretch;
+}
+
+.content {
+    flex: 1;
 }
 
 #import-status-container {
     position: relative;
+
+    width: 100%;
+    max-width: 400px;
+    
+    flex: 1;
+    
+    min-height: 0;
+    overflow-y: auto;
 }
 
 #import-status-placeholder {
