@@ -33,6 +33,11 @@
     gap: 1rem;
 }
 
+.import-status-placeholder-text {
+    margin: 0.25rem;
+    color: var(--secondary-text);
+}
+
 #import-status-list {
     display: flex;
     flex-direction: column;
