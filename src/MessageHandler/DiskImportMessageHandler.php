@@ -32,6 +32,7 @@ class DiskImportMessageHandler {
             $status = $this->entityManager->getRepository(ImportStatus::class)->find($message->importStatusId);
             $status->setErrorOccurred(true);
             $status->setErrorMessage("qm disk import command failed: " . $process->getErrorOutput());
+            $this->entityManager->flush();
             return;
         }
 
