@@ -108,10 +108,12 @@
 
 .import-card-status.success {
     color: var(--success);
+    background-color: transparent;
 }
 
 .import-card-status.error {
     color: var(--error);
+    background-color: transparent;
 }
 
 .import-card-date, .import-card-vmid {
