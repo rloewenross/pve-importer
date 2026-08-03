@@ -25,10 +25,16 @@ class DiskUploadMessageHandler {
         
         $importStatus = new ImportStatus($message->clientInfo->username, $message->vmName, $newVmid);
         
-        $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', [ 'vmid' => $newVmid, 'name' => $message->vmName ]);
-        if ($createVmResponse->getStatusCode() != 200) {
+        try {
+            $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', ['vmid' => $newVmid, 'name' => $message->vmName]);
+
+            if ($createVmResponse->getStatusCode() != 200) {
+                $importStatus->setErrorOccurred(true);
+                $importStatus->setErrorMessage($createVmResponse->toArray()['data']['error']);
+            }
+        } catch (\Exception $e) {
             $importStatus->setErrorOccurred(true);
-            $importStatus->setErrorMessage($createVmResponse->toArray()['data']['error']);
+            $importStatus->setErrorMessage($e->getMessage());
         }
         
         $this->entityManager->persist($importStatus);
