@@ -112,7 +112,7 @@ function createImportCard(statusInfo) {
     const dateCreated = new Date(statusInfo.date_created * 1000);
     var date = document.createElement("p");
     date.className = "import-card-date";
-    date.textContent = dateCreated.toDateString().concat(" ", dateCreated.getHours(), ":", dateCreated.getMinutes());
+    date.textContent = dateCreated.toDateString().concat(" ", dateCreated.toLocaleTimeString());
 
     var vmid = document.createElement("p");
     vmid.className = "import-card-vmid";
