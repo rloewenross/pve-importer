@@ -94,7 +94,7 @@ class PveClient {
     }
     
     public function toInfo(): PveClientInfo {
-        return new PveClientInfo($this->ticket, $this->csrf, $this->username, $this->pveStorage);
+        return new PveClientInfo($this->ticket, $this->csrf, $this->username);
     }
 }
 ?>
