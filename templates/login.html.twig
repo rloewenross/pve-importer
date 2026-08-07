@@ -9,10 +9,15 @@
 {% block body %}
     <div class="content">
         <h1>Log in to PVE-Importer</h1>
-        <form class="login-form" method="post">
+        <form class="login-form" method="post" data-turbo="false">
             <input type="text" name="username" placeholder="username">
             <input type="password" name="password" placeholder="password">
             <button type="submit">Log in</button>
         </form>
+        {% if auth_error %}
+            <div id="auth-error-container">
+                <p class="status-message error">Authentication error</p>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
