@@ -5,3 +5,8 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+#auth-error-container {
+    display: flex;
+    justify-content: center;
+}

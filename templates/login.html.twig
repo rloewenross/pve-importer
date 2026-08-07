@@ -15,7 +15,9 @@
             <button type="submit">Log in</button>
         </form>
         {% if auth_error %}
-            <p class="status-message error">Authentication error</p>
+            <div id="auth-error-container">
+                <p class="status-message error">Authentication error</p>
+            </div>
         {% endif %}
     </div>
 {% endblock %}
