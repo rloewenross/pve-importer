@@ -68,6 +68,12 @@ button:hover, input[type="file"]::file-selector-button:hover {
     border: var(--success);
 }
 
+.status-message {
+    color: var(--background);
+    border: 2px solid;
+    border-radius: 4px;
+}
+
 progress {
     border: 2px solid var(--border);
     border-radius: 4px;
