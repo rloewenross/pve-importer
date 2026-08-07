@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Environment as TwigEnvironment;
 use App\PveClientFactory;
 
 /**
@@ -26,6 +27,7 @@ class PveAuthenticator extends AbstractAuthenticator
         private RequestStack $requestStack,
         private UrlGeneratorInterface $urlGenerator,
         private PveClientFactory $pveClientFactory,
+        private TwigEnvironment $twig,
     ) {}
 
     /**
@@ -78,15 +80,7 @@ class PveAuthenticator extends AbstractAuthenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $data = [
-            // you may want to customize or obfuscate the message first
-            'message' => strtr($exception->getMessageKey(), $exception->getMessageData()),
-
-            // or to translate this message
-            // $this->translator->trans($exception->getMessageKey(), $exception->getMessageData())
-        ];
-
-        return new JsonResponse($data, Response::HTTP_UNAUTHORIZED);
+        return new Response($this->twig->render('login.html.twig', [ 'auth_error' => true ]));
     }
 
     // public function start(Request $request, ?AuthenticationException $authException = null): Response
