@@ -21,6 +21,10 @@ security:
                 - App\Security\PveAuthenticator
             entry_point: App\Security\AuthenticationEntryPoint
 
+            logout:
+                path: /logout
+                target: login
+
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
 
