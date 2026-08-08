@@ -27,7 +27,7 @@ class ImportStatusControllerTest extends WebTestCase {
 
         $client->loginUser(new PveUser($username));
         $client->request("GET", "/import_status");
-        $importStatusResponseData = \json_decode($client->getResponse(), true);
+        $importStatusResponseData = \json_decode($client->getResponse()->getContent(), true);
 
         $this->assertSame(1, \count($importStatusResponseData));
         $this->assertSame($vm_name, $importStatusResponseData[0]["vm_name"]);
