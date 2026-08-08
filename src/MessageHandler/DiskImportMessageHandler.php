@@ -24,10 +24,10 @@ class DiskImportMessageHandler {
         $process->setTimeout(null);
         $process->setIdleTimeout(600);
         $process->run();
-        
+
         $filesystem = new Filesystem();
         $filesystem->remove($message->filePath);
-        
+
         if (!$process->isSuccessful()) {
             $status = $this->entityManager->getRepository(ImportStatus::class)->find($message->importStatusId);
             $status->setErrorOccurred(true);

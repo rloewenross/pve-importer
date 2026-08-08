@@ -19,13 +19,13 @@ class PveClientFactory {
             'verify_host' => false,
         ]);
     }
-    
+
     public function newPveClient(string $username, string $password): PveClient {
         $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->login($username, $password);
         return $client;
     }
-    
+
     public function fromSession(SessionInterface $session): PveClient {
         $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->setTicket($session->get('pve-ticket'));
@@ -33,7 +33,7 @@ class PveClientFactory {
         $client->username = $session->get('pve-username');
         return $client;
     }
-    
+
     public function fromInfo(PveClientInfo $info): PveClient {
         $client = new PveClient($this->httpClient, $this->pveStorage);
         $client->setTicket($info->ticket);

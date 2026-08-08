@@ -27,32 +27,32 @@ class PveClient {
             'https://localhost:8006/api2/json/access/ticket',
             [ 'json' => [ 'username' => $username, 'password' => $password, ] ],
         );
-        
+
         if ($loginResponse->getStatusCode() != 200) {
             throw new CustomUserMessageAuthenticationException('Invalid Proxmox credentials');
         }
-        
+
         $loginResponseData = $loginResponse->toArray()['data'];
         $this->ticket = $loginResponseData['ticket'];
         $this->csrf = $loginResponseData['CSRFPreventionToken'];
-        
+
         $this->username = $username;
     }
-    
+
     public function setTicket(string $ticket) {
         $this->ticket = $ticket;
     }
-    
+
     public function setCsrf(string $csrf) {
         $this->csrf = $csrf;
     }
-    
+
     public function toSession(SessionInterface $session) {
         $session->set('pve-ticket', $this->ticket);
         $session->set('pve-csrf', $this->csrf);
         $session->set('pve-username', $this->username);
     }
-    
+
     public function api(string $method, string $path, array $data): ResponseInterface {
         $options = [
                 'headers' => [
@@ -72,7 +72,7 @@ class PveClient {
             $options,
         );
     }
-    
+
     public function getFreeVmid(): int {
         $resourcesResponse = $this->api('GET', '/cluster/resources', [ 'type' => 'vm' ]);
         $resources = $resourcesResponse->toArray()['data'];
@@ -89,10 +89,10 @@ class PveClient {
                 $newid += 1;
             }
         }
-        
+
         return $newid;
     }
-    
+
     public function toInfo(): PveClientInfo {
         return new PveClientInfo($this->ticket, $this->csrf, $this->username);
     }

@@ -12,7 +12,7 @@ class AuthenticationEntryPoint implements AuthenticationEntryPointInterface {
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
     ) {}
-    
+
     public function start(Request $request, ?AuthenticationException $authException = null): Response {
         if ($request->attributes->get('_route') == 'login') {
             return new Response('Authentication Required.', Response::HTTP_UNAUTHORIZED);

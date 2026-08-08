@@ -57,16 +57,16 @@ class PveAuthenticator extends AbstractAuthenticator
 
         $username = $request->request->get('username');
         $password = $request->request->get('password');
-        
+
         if (is_null($username) || is_null($password)) {
             throw new CustomUserMessageAuthenticationException('Invalid request');
         }
 
         $client = $this->pveClientFactory->newPveClient($username, $password);
-        
+
         $session = $this->requestStack->getSession();
         $client->toSession($session);
-        
+
         return new SelfValidatingPassport(new UserBadge($username));
     }
 
@@ -74,7 +74,7 @@ class PveAuthenticator extends AbstractAuthenticator
     {
         // on success, let the request continue
         //return null;
-        
+
         return new RedirectResponse($this->urlGenerator->generate('import'));
     }
 

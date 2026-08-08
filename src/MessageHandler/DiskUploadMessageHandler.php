@@ -19,12 +19,12 @@ class DiskUploadMessageHandler {
 
     public function __invoke(DiskUploadMessage $message): void {
         $client = $this->pveClientFactory->fromInfo($message->clientInfo);
-        
+
         $nodeName = strtok(gethostname(), '.');
         $newVmid = $client->getFreeVmid();
-        
+
         $importStatus = new ImportStatus($message->clientInfo->username, $message->vmName, $newVmid);
-        
+
         try {
             $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', ['vmid' => $newVmid, 'name' => $message->vmName]);
 
@@ -36,10 +36,10 @@ class DiskUploadMessageHandler {
             $importStatus->setErrorOccurred(true);
             $importStatus->setErrorMessage($e->getMessage());
         }
-        
+
         $this->entityManager->persist($importStatus);
         $this->entityManager->flush();
-        
+
         if (!$importStatus->isErrorOccurred()) {
             $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $importStatus->getId()));
         }

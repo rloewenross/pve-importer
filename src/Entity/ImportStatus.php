@@ -35,7 +35,7 @@ class ImportStatus
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $date_created = null;
-    
+
     public function __construct(string $pve_user_id, string $vm_name, int $vmid) {
         $this->error_occurred = false;
         $this->complete = false;

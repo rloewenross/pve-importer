@@ -28,7 +28,7 @@ class ImportStatusController extends AbstractController {
             },
             $statusList
         );
-        
+
         foreach ($statusList as $status) {
             if ($status->isComplete() || $status->isErrorOccurred()) { # since the status is done and we are giving it to the client we can remove it
                 $entityManager->remove($status);
