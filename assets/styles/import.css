@@ -1,3 +1,15 @@
+#logout {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    border: 2px solid;
+    border-radius: 4px;
+    padding: 0.2rem;
+    background-color: var(--surface);
+    color: var(--secondary-text);
+    text-decoration: none;
+}
+
 .file-input-container {
     font-family: inherit;
     display: flex;
