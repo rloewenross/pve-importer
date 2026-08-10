@@ -1,0 +1,76 @@
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - php8.4-fpm
+      - php8.4-mysql
+      - composer
+      - nginx
+    state: present
+
+- name: Create system user
+  ansible.builtin.user:
+    name: "{{ unix_user }}"
+    group: "{{ unix_user }}"
+    system: true
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ install_path }}"
+    owner: "{{ unix_user }}"
+    group: "{{ unix_user }}"
+    mode: "0700"
+
+- name: Clone PVE-Importer Git repository
+  ansible.builtin.git:
+    repo: "{{ git_url }}"
+    version: "{{ git_branch }}"
+    dest: "{{ install_path }}"
+
+- name: Ensure upload directory exists
+  ansible.builtin.file:
+    path: "{{ upload_dir }}"
+    state: directory
+    owner: "{{ unix_user }}"
+    group: "{{ unix_user }}"
+    mode: "0700"
+
+- name: Install .env.local
+  ansible.builtin.template:
+    src: env.local.j2
+    dest: "{{ install_path }}/.env.local"
+    owner: "{{ unix_user }}"
+    group: "{{ unix_user }}"
+
+- name: Install composer dependencies
+  ansible.builtin.command:
+    chdir: "{{ install_path }}"
+    cmd: composer install --no-dev --optimize-autoloader
+  become_user: "{{ unix_user }}"
+
+- name: Install PHP-FPM pool configuration
+  ansible.builtin.template:
+    src: pve_importer.php-pool.j2
+    dest: /etc/php/8.4/fpm/pool.d/pve_importer.conf
+
+- name: Enable PHP-FPM
+  ansible.builtin.service:
+    name: php8.4-fpm
+    enabled: true
+    state: restarted
+
+- name: Install nginx configuration
+  ansible.builtin.template:
+    src: pve_importer.nginx.j2
+    dest: /etc/nginx/sites-available/pve_importer
+
+- name: Enable nginx configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/pve_importer
+    state: link
+    src: /etc/nginx/sites-available/pve_importer
+
+- name: Enable nginx
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: restarted

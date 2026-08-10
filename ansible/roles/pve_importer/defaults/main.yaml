@@ -1,0 +1,9 @@
+install_path: /opt/pve-importer
+git_url: https://github.com/rloewenross/pve-importer.git
+git_branch: main
+proxmox_storage: local
+upload_dir: /opt/pve-importer/var/uploads
+database_url: mysql://pve_importer:Pa$$w0rd@127.0.0.1:3306/pve_importer
+web_url: import.example.com
+unix_user: pve_importer
+php_socket: /var/run/php/pve_importer.sock
