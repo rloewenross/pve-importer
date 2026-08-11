@@ -81,6 +81,15 @@
   register: pve_importer_composer_install_result
   changed_when: pve_importer_composer_install_result.rc != 0
 
+- name: Run Doctrine migrations
+  ansible.builtin.command:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: php bin/console doctrine:migrations:migrate --no-interaction
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_migrate_result
+  changed_when: pve_importer_migrate_result.rc != 0
+
 - name: Install PHP-FPM pool configuration
   ansible.builtin.template:
     src: pve_importer.php-pool.j2
