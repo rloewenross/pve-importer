@@ -33,6 +33,8 @@
     repo: "{{ pve_importer_git_url }}"
     version: "{{ pve_importer_git_branch }}"
     dest: "{{ pve_importer_install_path }}"
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
 
 - name: Ensure upload directory exists
   ansible.builtin.file:
