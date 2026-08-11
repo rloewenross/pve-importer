@@ -2,5 +2,7 @@
 user = {{ pve_importer_unix_user }}
 group = {{ pve_importer_unix_user }}
 listen = {{ pve_importer_php_socket }}
+listen.owner = www-data
+listen.group = www-data
 pm = ondemand
 pm.max_children = 10
