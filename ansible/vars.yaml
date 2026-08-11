@@ -1,3 +1,0 @@
-web_url: import.example.com
-proxmox_storage: shared
-db_password: "{{ vault_db_password }}"

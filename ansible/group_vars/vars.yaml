@@ -1,0 +1,3 @@
+pve_importer_web_url: import.example.com
+pve_importer_proxmox_storage: shared
+pve_importer_database_password: "{{ vault_pve_importer_database_password }}"

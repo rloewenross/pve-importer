@@ -9,43 +9,43 @@
 
 - name: Create system user
   ansible.builtin.user:
-    name: "{{ unix_user }}"
-    group: "{{ unix_user }}"
+    name: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
     system: true
 
 - name: Create application directory
   ansible.builtin.file:
-    path: "{{ install_path }}"
-    owner: "{{ unix_user }}"
-    group: "{{ unix_user }}"
+    path: "{{ pve_importer_install_path }}"
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
     mode: "0700"
 
 - name: Clone PVE-Importer Git repository
   ansible.builtin.git:
-    repo: "{{ git_url }}"
-    version: "{{ git_branch }}"
-    dest: "{{ install_path }}"
+    repo: "{{ pve_importer_git_url }}"
+    version: "{{ pve_importer_git_branch }}"
+    dest: "{{ pve_importer_install_path }}"
 
 - name: Ensure upload directory exists
   ansible.builtin.file:
-    path: "{{ upload_dir }}"
+    path: "{{ pve_importer_upload_dir }}"
     state: directory
-    owner: "{{ unix_user }}"
-    group: "{{ unix_user }}"
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
     mode: "0700"
 
 - name: Install .env.local
   ansible.builtin.template:
     src: env.local.j2
-    dest: "{{ install_path }}/.env.local"
-    owner: "{{ unix_user }}"
-    group: "{{ unix_user }}"
+    dest: "{{ pve_importer_install_path }}/.env.local"
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
 
 - name: Install composer dependencies
   ansible.builtin.command:
-    chdir: "{{ install_path }}"
+    chdir: "{{ pve_importer_install_path }}"
     cmd: composer install --no-dev --optimize-autoloader
-  become_user: "{{ unix_user }}"
+  become_user: "{{ pve_importer_unix_user }}"
 
 - name: Install PHP-FPM pool configuration
   ansible.builtin.template:
