@@ -114,6 +114,11 @@
     state: link
     src: /etc/nginx/sites-available/pve_importer
 
+- name: Remove nginx default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
 - name: Enable nginx
   ansible.builtin.service:
     name: nginx
