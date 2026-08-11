@@ -27,13 +27,13 @@
     enabled: true
 
 - name: Create MariaDB database
-  ansible.mysql.mysql_db:
+  ansible.mariadb.mariadb_db:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     name: "{{ pve_importer_database_name }}"
     state: present
 
 - name: Create MariaDB user
-  ansible.mysql.mysql_user:
+  ansible.mariadb.mariadb_user:
     login_unix_socket: /var/run/mysqld/mysqld.sock
     name: "{{ pve_importer_database_user }}"
     password: "{{ pve_importer_database_password }}"

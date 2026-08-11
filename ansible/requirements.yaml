@@ -1,2 +1,2 @@
 collections:
-  - ansible.mysql
+  - ansible.mariadb
