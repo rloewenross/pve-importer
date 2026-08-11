@@ -4,6 +4,7 @@ git_branch: main
 proxmox_storage: local
 upload_dir: /opt/pve-importer/var/uploads
 database_user: pve_importer
+#database_password: password
 database_host: 127.0.0.1
 database_port: 3306
 database_name: pve_importer
