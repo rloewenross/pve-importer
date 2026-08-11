@@ -46,7 +46,7 @@
     state: directory
     owner: "{{ pve_importer_unix_user }}"
     group: "{{ pve_importer_unix_user }}"
-    mode: "0700"
+    mode: "0755"
 
 - name: Clone PVE-Importer Git repository
   ansible.builtin.git:
