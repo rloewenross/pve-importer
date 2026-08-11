@@ -18,6 +18,7 @@
 - name: Create application directory
   ansible.builtin.file:
     path: "{{ pve_importer_install_path }}"
+    state: directory
     owner: "{{ pve_importer_unix_user }}"
     group: "{{ pve_importer_unix_user }}"
     mode: "0700"
