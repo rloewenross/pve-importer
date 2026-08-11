@@ -9,6 +9,11 @@
       - nginx
     state: present
 
+- name: Create system group
+  ansible.builtin.group:
+    name: "{{ pve_importer_unix_user }}"
+    system: true
+
 - name: Create system user
   ansible.builtin.user:
     name: "{{ pve_importer_unix_user }}"
