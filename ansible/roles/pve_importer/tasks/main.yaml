@@ -40,17 +40,22 @@
     dest: "{{ pve_importer_install_path }}/.env.local"
     owner: "{{ pve_importer_unix_user }}"
     group: "{{ pve_importer_unix_user }}"
+    mode: "0600"
 
 - name: Install composer dependencies
   ansible.builtin.command:
     chdir: "{{ pve_importer_install_path }}"
     cmd: composer install --no-dev --optimize-autoloader
+  become: true
   become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_composer_install_result
+  changed_when: pve_importer_composer_install_result.rc != 0
 
 - name: Install PHP-FPM pool configuration
   ansible.builtin.template:
     src: pve_importer.php-pool.j2
     dest: /etc/php/8.4/fpm/pool.d/pve_importer.conf
+    mode: "0640"
 
 - name: Enable PHP-FPM
   ansible.builtin.service:
@@ -62,6 +67,7 @@
   ansible.builtin.template:
     src: pve_importer.nginx.j2
     dest: /etc/nginx/sites-available/pve_importer
+    mode: "0640"
 
 - name: Enable nginx configuration
   ansible.builtin.file:
