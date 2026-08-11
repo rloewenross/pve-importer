@@ -4,8 +4,6 @@ pve_importer_git_branch: main
 pve_importer_proxmox_storage: local
 pve_importer_upload_dir: /opt/pve-importer/var/uploads
 pve_importer_database_user: pve_importer
-pve_importer_database_host: 127.0.0.1
-pve_importer_database_port: 3306
 pve_importer_database_name: pve_importer
 pve_importer_web_url: import.example.com
 pve_importer_unix_user: pve_importer
