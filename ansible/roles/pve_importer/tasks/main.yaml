@@ -111,6 +111,18 @@
     enabled: true
     state: restarted
 
+- name: Install HTTPS certificate
+  ansible.builtin.copy:
+    content: "{{ pve_importer_https_cert_chain }}"
+    dest: "{{ pve_importer_https_cert_dest_path }}"
+    mode: "0644"
+
+- name: Install HTTPS certificate key
+  ansible.builtin.copy:
+    content: "{{ pve_importer_https_key }}"
+    dest: "{{ pve_importer_https_key_dest_path }}"
+    mode: "0600"
+
 - name: Install nginx configuration
   ansible.builtin.template:
     src: pve_importer.nginx.j2

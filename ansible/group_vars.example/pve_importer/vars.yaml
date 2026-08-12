@@ -1,3 +1,11 @@
 pve_importer_web_url: import.example.com
 pve_importer_proxmox_storage: shared
 pve_importer_database_password: "{{ vault_pve_importer_database_password }}"
+pve_importer_https_cert_chain: |
+  -----BEGIN CERTIFICATE-----
+  ............................
+  -----END CERTIFICATE-----
+  -----BEGIN CERTIFICATE-----
+  ............................
+  -----END CERTIFICATE-----
+pve_importer_https_key: "{{ vault_pve_importer_https_key }}"

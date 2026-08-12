@@ -8,3 +8,5 @@ pve_importer_database_name: pve_importer
 pve_importer_web_url: import.example.com
 pve_importer_unix_user: pve_importer
 pve_importer_php_socket: /var/run/php/pve_importer.sock
+pve_importer_https_cert_dest_path: /etc/ssl/pve-importer/cert.pem
+pve_importer_https_key_dest_path: /etc/ssl/pve-importer/key.pem

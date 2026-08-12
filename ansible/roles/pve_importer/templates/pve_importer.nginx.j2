@@ -1,5 +1,8 @@
 server {
     listen 80;
+    listen 443 ssl;
+    ssl_certificate {{ pve_importer_https_cert_dest_path }};
+    ssl_certificate_key {{ pve_importer_https_key_dest_path }};
 
     server_name {{ pve_importer_web_url }};
     root {{ pve_importer_install_path }}/public;
