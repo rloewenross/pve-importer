@@ -1,0 +1,5 @@
+vault_pve_importer_database_password: P@$$w0rd
+vault_pve_importer_https_key: |
+  -----BEGIN PRIVATE KEY-----
+  ............................
+  -----END PRIVATE KEY-----
