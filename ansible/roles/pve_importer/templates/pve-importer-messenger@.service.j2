@@ -1,0 +1,12 @@
+[Unit]
+Description=PVE-Importer messenger-consume %i
+
+[Service]
+User={{ pve_importer_unix_user}}
+Group={{ pve_importer_unix_user}}
+ExecStart=php {{ pve_importer_install_path }}/bin/console messenger:consume async --limit=10
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target

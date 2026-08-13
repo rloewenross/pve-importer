@@ -112,6 +112,24 @@
     enabled: true
     state: restarted
 
+- name: Install messenger handler systemd service
+  ansible.builtin.template:
+    src: pve-importer-messenger@.service.j2
+    dest: /etc/systemd/system/pve-importer-messenger@.service
+    mode: "0640"
+
+- name: Reload systemd configuration
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start messenger workers
+  ansible.builtin.systemd:
+    name: pve-importer-messenger@{{ item }}.service
+    enabled: true
+    state: restarted
+    no_block: true
+  loop: "{{ range(1, 11) | list }}"
+
 - name: Install HTTPS certificate
   ansible.builtin.copy:
     content: "{{ pve_importer_https_cert_chain }}"
