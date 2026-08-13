@@ -1,6 +1,7 @@
 - name: Install dependencies
   ansible.builtin.package:
     name:
+      - sudo
       - php8.4-fpm
       - php8.4-mysql
       - php8.4-xml
