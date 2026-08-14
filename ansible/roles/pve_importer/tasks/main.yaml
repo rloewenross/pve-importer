@@ -100,6 +100,12 @@
   register: pve_importer_migrate_result
   changed_when: pve_importer_migrate_result.rc != 0
 
+- name: Install sudoers.d file
+  ansible.builtin.template:
+    src: pve_importer.sudo.j2
+    dest: /etc/sudoers.d/pve_importer
+    mode: "0600"
+
 - name: Install PHP-FPM pool configuration
   ansible.builtin.template:
     src: pve_importer.php-pool.j2
