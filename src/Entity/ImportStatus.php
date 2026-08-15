@@ -122,12 +122,12 @@ class ImportStatus
         return $this;
     }
 
-    public function getDateCreated(): ?\DateTime
+    public function getDateCreated(): ?\DateTimeImmutable
     {
         return $this->date_created;
     }
 
-    public function setDateCreated(\DateTime $date_created): static
+    public function setDateCreated(\DateTimeImmutable $date_created): static
     {
         $this->date_created = $date_created;
 
