@@ -30,6 +30,9 @@ class DiskUploadMessageHandler {
             $this->entityManager->flush();
             return;
         }
+        
+        $importStatus->setVmid($newVmid);
+        $this->entityManager->flush();
 
         try {
             $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', ['vmid' => $newVmid, 'name' => $message->vmName]);
