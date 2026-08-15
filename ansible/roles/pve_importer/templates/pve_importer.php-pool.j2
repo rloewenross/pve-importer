@@ -15,4 +15,4 @@ pm.max_spawn_rate = {{ pve_importer_php_fpm_pm_max_spawn_rate }}
 pm.process_idle_timeout = {{ pve_importer_php_fpm_pm_process_idle_timeout }}
 {% endif %}
 pm.max_requests = {{ pve_importer_php_fpm_pm_max_requests }}
-php_value[max_execution_time] = 300
+php_value[max_execution_time] = {{ pve_importer_php_max_execution_time }}

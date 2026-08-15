@@ -18,3 +18,5 @@ pve_importer_php_fpm_pm_max_spare_servers: 6
 pve_importer_php_fpm_pm_max_spawn_rate: 4
 pve_importer_php_fpm_pm_process_idle_timeout: 10s
 pve_importer_php_fpm_pm_max_requests: 0
+pve_importer_nginx_max_body_size: 100G
+pve_importer_php_max_execution_time: 300

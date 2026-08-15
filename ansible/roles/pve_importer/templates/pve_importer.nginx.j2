@@ -24,6 +24,6 @@ server {
         return 404;
     }
 
-    client_max_body_size 100G;
+    client_max_body_size {{ pve_importer_nginx_max_body_size }};
     fastcgi_request_buffering off;
 }
