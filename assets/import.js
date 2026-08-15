@@ -167,7 +167,7 @@ function loadImportStatus() {
             importStatusList.hidden = false;
             
             for (const status of data) {
-                if (status.error_occurred || status.complete) {
+                if (status.state == "error" || status.state == "complete") {
                     finishedStatusList.push(status);
                 }
             }
