@@ -33,8 +33,8 @@ class ImportStatus
     #[ORM\Column]
     private ?int $vmid = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_created = null;
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    private ?\DateTimeImmutable $date_created = null;
 
     public function __construct(string $pve_user_id, string $vm_name, int $vmid) {
         $this->error_occurred = false;
@@ -42,7 +42,7 @@ class ImportStatus
         $this->pve_user_id = $pve_user_id;
         $this->vm_name = $vm_name;
         $this->vmid = $vmid;
-        $this->date_created = \DateTime::createFromTimestamp(\time());
+        $this->date_created = \DateTimeImmutable::createFromTimestamp(\time());
     }
 
     public function getId(): ?int
