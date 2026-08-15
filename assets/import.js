@@ -118,7 +118,7 @@ function createImportCard(statusInfo) {
 
     var vmid = document.createElement("p");
     vmid.className = "import-card-vmid";
-    vmid.textContent = "vmid: ".concat(statusInfo.vmid.toString());
+    vmid.textContent = "vmid: ".concat(statusInfo.vmid !== null ? statusInfo.vmid.toString() : "???");
     
     if (statusInfo.state == "error") {
         var message = document.createElement("p");
