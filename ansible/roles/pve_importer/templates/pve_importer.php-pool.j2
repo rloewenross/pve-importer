@@ -1,0 +1,18 @@
+[pve_importer]
+user = {{ pve_importer_unix_user }}
+group = {{ pve_importer_unix_user }}
+listen = {{ pve_importer_php_socket }}
+listen.owner = www-data
+listen.group = www-data
+pm = {{ pve_importer_php_fpm_pm }}
+pm.max_children = {{ pve_importer_php_fpm_pm_max_children }}
+{% if pve_importer_php_fpm_pm == "dynamic" %}
+pm.start_servers = {{ pve_importer_php_fpm_pm_start_servers }}
+pm.min_spare_servers = {{ pve_importer_php_fpm_pm_min_spare_servers }}
+pm.max_spare_servers = {{ pve_importer_php_fpm_pm_max_spare_servers }}
+pm.max_spawn_rate = {{ pve_importer_php_fpm_pm_max_spawn_rate }}
+{% elif pve_importer_php_fpm_pm == "ondemand" %}
+pm.process_idle_timeout = {{ pve_importer_php_fpm_pm_process_idle_timeout }}
+{% endif %}
+pm.max_requests = {{ pve_importer_php_fpm_pm_max_requests }}
+php_value[max_execution_time] = {{ pve_importer_php_max_execution_time }}

@@ -1,0 +1,6 @@
+- name: Deploy PVE-Importer
+  hosts: pve_importer
+  become: true
+
+  roles:
+    - pve_importer

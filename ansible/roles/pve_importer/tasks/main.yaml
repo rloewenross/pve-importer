@@ -1,0 +1,172 @@
+- name: Install dependencies
+  ansible.builtin.package:
+    name:
+      - sudo
+      - php8.4-fpm
+      - php8.4-mysql
+      - php8.4-xml
+      - composer
+      - mariadb-server
+      - python3-pymysql
+      - nginx
+    state: present
+
+- name: Create system group
+  ansible.builtin.group:
+    name: "{{ pve_importer_unix_user }}"
+    system: true
+
+- name: Create system user
+  ansible.builtin.user:
+    name: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
+    system: true
+
+- name: Enable MariaDB
+  ansible.builtin.service:
+    name: mariadb
+    enabled: true
+
+- name: Create MariaDB database
+  ansible.mariadb.mariadb_db:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: "{{ pve_importer_database_name }}"
+    state: present
+
+- name: Create MariaDB user
+  ansible.mariadb.mariadb_user:
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: "{{ pve_importer_database_user }}"
+    password: "{{ pve_importer_database_password }}"
+    priv: "{{ pve_importer_database_name }}.*:ALL"
+    state: present
+
+- name: Create application directory
+  ansible.builtin.file:
+    path: "{{ pve_importer_install_path }}"
+    state: directory
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
+    mode: "0755"
+
+- name: Clone PVE-Importer Git repository
+  ansible.builtin.git:
+    repo: "{{ pve_importer_git_url }}"
+    version: "{{ pve_importer_git_branch }}"
+    dest: "{{ pve_importer_install_path }}"
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+
+- name: Ensure upload directory exists
+  ansible.builtin.file:
+    path: "{{ pve_importer_upload_dir }}"
+    state: directory
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
+    mode: "0700"
+
+- name: Install .env.local
+  ansible.builtin.template:
+    src: env.local.j2
+    dest: "{{ pve_importer_install_path }}/.env.local"
+    owner: "{{ pve_importer_unix_user }}"
+    group: "{{ pve_importer_unix_user }}"
+    mode: "0600"
+
+- name: Install composer dependencies
+  ansible.builtin.command:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: composer install --no-dev --optimize-autoloader
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_composer_install_result
+  changed_when: pve_importer_composer_install_result.rc != 0
+
+- name: Compile assets
+  ansible.builtin.command:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: php bin/console asset-map:compile --no-interaction
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_asset_compile_result
+  changed_when: pve_importer_asset_compile_result.rc != 0
+
+- name: Run Doctrine migrations
+  ansible.builtin.command:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_migrate_result
+  changed_when: pve_importer_migrate_result.rc != 0
+
+- name: Install sudoers.d file
+  ansible.builtin.template:
+    src: pve_importer.sudo.j2
+    dest: /etc/sudoers.d/pve_importer
+    mode: "0600"
+
+- name: Install PHP-FPM pool configuration
+  ansible.builtin.template:
+    src: pve_importer.php-pool.j2
+    dest: /etc/php/8.4/fpm/pool.d/pve_importer.conf
+    mode: "0640"
+
+- name: Enable PHP-FPM
+  ansible.builtin.service:
+    name: php8.4-fpm
+    enabled: true
+    state: restarted
+
+- name: Install messenger handler systemd service
+  ansible.builtin.template:
+    src: pve-importer-messenger@.service.j2
+    dest: /etc/systemd/system/pve-importer-messenger@.service
+    mode: "0640"
+
+- name: Reload systemd configuration
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Start messenger workers
+  ansible.builtin.systemd:
+    name: pve-importer-messenger@{{ item }}.service
+    enabled: true
+    state: restarted
+    no_block: true
+  loop: "{{ range(1, pve_importer_messenger_handler_amount + 1) | list }}"
+
+- name: Install HTTPS certificate
+  ansible.builtin.copy:
+    content: "{{ pve_importer_https_cert_chain }}"
+    dest: "{{ pve_importer_https_cert_dest_path }}"
+    mode: "0644"
+
+- name: Install HTTPS certificate key
+  ansible.builtin.copy:
+    content: "{{ pve_importer_https_key }}"
+    dest: "{{ pve_importer_https_key_dest_path }}"
+    mode: "0600"
+
+- name: Install nginx configuration
+  ansible.builtin.template:
+    src: pve_importer.nginx.j2
+    dest: /etc/nginx/sites-available/pve_importer
+    mode: "0640"
+
+- name: Enable nginx configuration
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/pve_importer
+    state: link
+    src: /etc/nginx/sites-available/pve_importer
+
+- name: Remove nginx default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Enable nginx
+  ansible.builtin.service:
+    name: nginx
+    enabled: true
+    state: restarted
