@@ -97,14 +97,16 @@ function createImportCard(statusInfo) {
 
     var status = document.createElement("p");
     status.className = "import-card-status";
-    if (statusInfo.complete) {
+    if (statusInfo.state == "complete") {
         status.textContent = "Done";
         status.classList.add("success");
-    } else if (statusInfo.error_occurred) {
+    } else if (statusInfo.state == "error") {
         status.textContent = "Failed";
         status.classList.add("error");
-    } else {
+    } else if (statusInfo.state == "importing") {
         status.textContent = "Importing";
+    } else {
+        status.textContent = "???";
     }
     
     header.append(title, status);
@@ -116,15 +118,15 @@ function createImportCard(statusInfo) {
 
     var vmid = document.createElement("p");
     vmid.className = "import-card-vmid";
-    vmid.textContent = "vmid: ".concat(statusInfo.vmid.toString());
+    vmid.textContent = "vmid: ".concat(statusInfo.vmid !== null ? statusInfo.vmid.toString() : "???");
     
-    if (statusInfo.error_occurred) {
+    if (statusInfo.state == "error") {
         var message = document.createElement("p");
         message.className = "import-card-message";
         message.textContent = statusInfo.error_message;
     }
     
-    if (statusInfo.error_occurred) {
+    if (statusInfo.state == "error") {
         card.append(header, date, vmid, message);
     } else {
         card.append(header, date, vmid);
@@ -165,7 +167,7 @@ function loadImportStatus() {
             importStatusList.hidden = false;
             
             for (const status of data) {
-                if (status.error_occurred || status.complete) {
+                if (status.state == "error" || status.state == "complete") {
                     finishedStatusList.push(status);
                 }
             }

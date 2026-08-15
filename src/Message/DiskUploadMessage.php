@@ -10,6 +10,7 @@ class DiskUploadMessage {
         public string $path,
         public string $vmName,
         public PveClientInfo $clientInfo,
+        public int $statusId,
     ) {}
 }
 ?>

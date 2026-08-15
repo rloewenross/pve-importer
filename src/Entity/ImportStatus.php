@@ -14,34 +14,28 @@ class ImportStatus
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+    
+    #[ORM\Column(length: 255)]
+    private ?string $state = null;
 
     #[ORM\Column(length: 255)]
     private ?string $pve_user_id = null;
 
-    #[ORM\Column]
-    private ?bool $error_occurred = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $error_message = null;
-
-    #[ORM\Column]
-    private ?bool $complete = null;
 
     #[ORM\Column(length: 255)]
     private ?string $vm_name = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $vmid = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeImmutable $date_created = null;
 
-    public function __construct(string $pve_user_id, string $vm_name, int $vmid) {
-        $this->error_occurred = false;
-        $this->complete = false;
+    public function __construct(string $pve_user_id, string $vm_name) {
         $this->pve_user_id = $pve_user_id;
         $this->vm_name = $vm_name;
-        $this->vmid = $vmid;
         $this->date_created = \DateTimeImmutable::createFromTimestamp(\time());
     }
 
@@ -62,14 +56,19 @@ class ImportStatus
         return $this;
     }
 
-    public function isErrorOccurred(): ?bool
+    public function getState(): ?string
     {
-        return $this->error_occurred;
+        return $this->state;
     }
 
-    public function setErrorOccurred(bool $error_occurred): static
+    public function isErrorOccurred(): ?bool
     {
-        $this->error_occurred = $error_occurred;
+        return $this->state == 'error';
+    }
+
+    public function setErrorOccurred(): static
+    {
+        $this->state = 'error';
 
         return $this;
     }
@@ -88,12 +87,24 @@ class ImportStatus
 
     public function isComplete(): ?bool
     {
-        return $this->complete;
+        return $this->state == 'complete';
     }
 
-    public function setComplete(bool $complete): static
+    public function setComplete(): static
     {
-        $this->complete = $complete;
+        $this->state = 'complete';
+
+        return $this;
+    }
+
+    public function isImporting(): ?bool
+    {
+        return $this->state == 'importing';
+    }
+    
+    public function setImporting(): static
+    {
+        $this->state = 'importing';
 
         return $this;
     }
