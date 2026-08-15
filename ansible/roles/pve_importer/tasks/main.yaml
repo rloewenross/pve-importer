@@ -134,7 +134,7 @@
     enabled: true
     state: restarted
     no_block: true
-  loop: "{{ range(1, 11) | list }}"
+  loop: "{{ range(1, pve_importer_messenger_handler_amount + 1) | list }}"
 
 - name: Install HTTPS certificate
   ansible.builtin.copy:
