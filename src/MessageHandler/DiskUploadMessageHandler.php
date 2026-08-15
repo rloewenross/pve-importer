@@ -23,17 +23,19 @@ class DiskUploadMessageHandler {
         $nodeName = strtok(gethostname(), '.');
         $newVmid = $client->getFreeVmid();
 
-        $importStatus = new ImportStatus($message->clientInfo->username, $message->vmName, $newVmid);
+        $importStatus = new ImportStatus($message->clientInfo->username, $message->vmName);
+        $importStatus->setImporting();
+        $importStatus->setVmid($newVmid);
 
         try {
             $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', ['vmid' => $newVmid, 'name' => $message->vmName]);
 
             if ($createVmResponse->getStatusCode() != 200) {
-                $importStatus->setErrorOccurred(true);
+                $importStatus->setErrorOccurred();
                 $importStatus->setErrorMessage($createVmResponse->toArray()['data']['error']);
             }
         } catch (\Exception $e) {
-            $importStatus->setErrorOccurred(true);
+            $importStatus->setErrorOccurred();
             $importStatus->setErrorMessage($e->getMessage());
         }
 

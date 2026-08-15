@@ -20,9 +20,8 @@ class ImportStatusController extends AbstractController {
                 return [
                     'vm_name' => $status->getVmName(),
                     'vmid' => $status->getVmid(),
-                    'error_occurred' => $status->isErrorOccurred(),
+                    'state' => $status->getState(),
                     'error_message' => $status->getErrorMessage(),
-                    'complete' => $status->isComplete(),
                     'date_created' => $status->getDateCreated()->getTimestamp(),
                 ];
             },
