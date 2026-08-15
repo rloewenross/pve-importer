@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use TusPhp\Tus\Server as TusServer;
 use TusPhp\Events\TusEvent;
 use App\PveClientFactory;
@@ -30,7 +31,11 @@ class TusController extends AbstractController {
             $safeFileName = $slugger->slug(basename($oldFilePath));
             $fileName = $safeFileName . '-' . uniqid();
             $filePath = dirname($oldFilePath) . '/' . $fileName;
-            rename($oldFilePath, $filePath);
+            if (!rename($oldFilePath, $filePath)) {
+                $filesystem = new Filesystem();
+                $filesystem->remove($oldFilePath);
+                throw new \RuntimeException("Failed to rename " . $oldFilePath . " to " . $filePath . ".");
+            }
             $vmName = basename($oldFilePath);
 
             $bus->dispatch(new DiskUploadMessage($filePath, $vmName, $client->toInfo()));
