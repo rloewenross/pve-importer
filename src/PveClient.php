@@ -3,7 +3,6 @@ namespace App;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\PveClientInfo;
@@ -21,7 +20,7 @@ class PveClient {
     public function login(
         string $username,
         string $password,
-    ) {
+    ): void {
         $loginResponse = $this->httpClient->request(
             'POST',
             'https://localhost:8006/api2/json/access/ticket',
@@ -39,20 +38,23 @@ class PveClient {
         $this->username = $username;
     }
 
-    public function setTicket(string $ticket) {
+    public function setTicket(string $ticket): void {
         $this->ticket = $ticket;
     }
 
-    public function setCsrf(string $csrf) {
+    public function setCsrf(string $csrf): void {
         $this->csrf = $csrf;
     }
 
-    public function toSession(SessionInterface $session) {
+    public function toSession(SessionInterface $session): void {
         $session->set('pve-ticket', $this->ticket);
         $session->set('pve-csrf', $this->csrf);
         $session->set('pve-username', $this->username);
     }
 
+    /**
+     * @param mixed[] $data
+     */
     public function api(string $method, string $path, array $data): ResponseInterface {
         $options = [
                 'headers' => [
