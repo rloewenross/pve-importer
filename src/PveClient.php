@@ -98,5 +98,18 @@ class PveClient {
     public function toInfo(): PveClientInfo {
         return new PveClientInfo($this->ticket, $this->csrf, $this->username);
     }
+
+    public function refresh(): void {
+        $refreshResponse = $this->api('POST', '/access/ticket', [
+            'username' => $this->username,
+            'password' => $this->ticket,
+        ]);
+        if ($refreshResponse->getStatusCode() !== 200) {
+            throw new \RuntimeException('Failed to refresh user');
+        }
+        $refreshResponse = $refreshResponse->toArray()['data'];
+        $this->ticket = $refreshResponse['ticket'];
+        $this->csrf = $refreshResponse['CSRFPreventionToken'];
+    }
 }
 ?>
