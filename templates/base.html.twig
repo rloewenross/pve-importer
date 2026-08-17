@@ -7,6 +7,9 @@
         {% endblock %}
 
         {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% if is_granted('ROLE_USER') %}
+            <script src="{{ asset('refresh.js') }}" type="module"></script>
+        {% endif %}
         {% block javascripts %}
         {% endblock %}
     </head>
