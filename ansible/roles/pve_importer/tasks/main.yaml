@@ -5,6 +5,7 @@
       - php8.4-fpm
       - php8.4-mysql
       - php8.4-xml
+      - php8.4-zip
       - composer
       - mariadb-server
       - python3-pymysql
