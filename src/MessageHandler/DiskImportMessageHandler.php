@@ -41,7 +41,7 @@ class DiskImportMessageHandler {
             $zip = new \ZipArchive();
             $zipDestPath = $filePath . '-extract';
             $filesystem->mkdir($zipDestPath);
-            if (!$zip->open($filePath) || !$zip->extractTo($zipDestPath)) {
+            if ($zip->open($filePath) !== true || !$zip->extractTo($zipDestPath)) {
                 $status->setErrorOccurred();
                 $status->setErrorMessage("Failed to extract zip file");
                 $this->entityManager->flush();
