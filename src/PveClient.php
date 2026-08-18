@@ -111,5 +111,20 @@ class PveClient {
         $this->ticket = $refreshResponse['ticket'];
         $this->csrf = $refreshResponse['CSRFPreventionToken'];
     }
+
+    public function checkPermission(string $path, string $privs): bool {
+        $permissionResponse = $this->api('POST', '/access/ticket', [
+            'username' => $this->username,
+            'password' => $this->ticket,
+            'path' => $path,
+            'privs' => $privs,
+        ]);
+
+        if ($permissionResponse->getStatusCode() === 200) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 ?>
