@@ -12,7 +12,7 @@ pve_importer_php_socket: /var/run/php/pve_importer.sock
 pve_importer_https_cert_dest_path: /etc/ssl/pve-importer/cert.pem
 pve_importer_https_key_dest_path: /etc/ssl/pve-importer/key.pem
 pve_importer_php_fpm_pm: dynamic
-pve_importer_php_fpm_pm_max_children: 10
+pve_importer_php_fpm_pm_max_children: 20
 pve_importer_php_fpm_pm_start_servers: 4
 pve_importer_php_fpm_pm_min_spare_servers: 2
 pve_importer_php_fpm_pm_max_spare_servers: 6
