@@ -22,9 +22,18 @@ class DiskImportMessageHandler {
     public function __invoke(DiskImportMessage $message): void {
         $filesystem = new Filesystem();
         $status = $this->entityManager->getRepository(ImportStatus::class)->find($message->importStatusId);
+        $client = $this->pveClientFactory->fromInfo($message->clientInfo);
 
         $filePath = $message->filePath;
         $origFilePath = $filePath;
+
+        if (!$client->checkPermission("/storage/" . $client->pveStorage, "Datastore.Allocate")) {
+            $status->setErrorOccurred();
+            $status->setErrorMessage("Missing permissions to allocate data");
+
+            $filesystem->remove($origFilePath);
+            return;
+        }
 
         $isZip = false;
         if (\mime_content_type($filePath) === "application/zip") {
@@ -67,7 +76,6 @@ class DiskImportMessageHandler {
             $isZip = true;
         }
 
-        $client = $this->pveClientFactory->fromInfo($message->clientInfo);
         $process = new Process(['sudo', '-n', '/usr/sbin/qm', 'disk', 'import', $message->vmId, $filePath, $client->pveStorage, '--target-disk', 'scsi0']);
         $process->setTimeout(null);
         $process->setIdleTimeout(600);
