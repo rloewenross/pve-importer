@@ -30,6 +30,7 @@ class DiskImportMessageHandler {
         if (!$client->checkPermission("/storage/" . $client->pveStorage, "Datastore.Allocate")) {
             $status->setErrorOccurred();
             $status->setErrorMessage("Missing permissions to allocate data");
+            $this->entityManager->flush();
 
             $filesystem->remove($origFilePath);
             return;
