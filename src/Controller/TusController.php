@@ -26,7 +26,9 @@ class TusController extends AbstractController {
     #[Route('/tus', name: 'tus_post')]
     #[Route('/tus/{token}', name: 'tus', requirements: [ 'token' => '.+' ])]
     public function tus(Request $request, TusServer $server): Response {
-        $client = $this->pveClientFactory->fromSession($request->getSession());
+        $session = $request->getSession();
+        $client = $this->pveClientFactory->fromSession($session);
+        $session->save();
         $bus = $this->bus;
         $slugger = $this->slugger;
         $entityManager = $this->entityManager;
