@@ -14,17 +14,16 @@ class ImportStatusControllerTest extends WebTestCase {
         $username = "test@pam";
         $vm_name = "testvm";
         $vmid = 100;
-        $error_occurred = false;
-        $complete = false;
+        $state = "importing";
 
         $client = static::createClient();
         $container = static::getContainer();
 
         $entityManager = $container->get(EntityManagerInterface::class);
 
-        $testStatus = new ImportStatus($username, $vm_name, $vmid);
-        $testStatus->setErrorOccurred($error_occurred);
-        $testStatus->setComplete($complete);
+        $testStatus = new ImportStatus($username, $vm_name);
+        $testStatus->setImporting();
+        $testStatus->setVmid($vmid);
         $entityManager->persist($testStatus);
         $entityManager->flush();
 
@@ -35,25 +34,23 @@ class ImportStatusControllerTest extends WebTestCase {
         $this->assertSame(1, \count($importStatusResponseData));
         $this->assertSame($vm_name, $importStatusResponseData[0]["vm_name"]);
         $this->assertSame($vmid, $importStatusResponseData[0]["vmid"]);
-        $this->assertSame($error_occurred, $importStatusResponseData[0]["error_occurred"]);
-        $this->assertSame($complete, $importStatusResponseData[0]["complete"]);
+        $this->assertSame($state, $importStatusResponseData[0]["state"]);
     }
 
     public function testShowStatusComplete() {
         $username = "test@pam";
         $vm_name = "testvm";
         $vmid = 100;
-        $error_occurred = false;
-        $complete = true;
+        $state = "complete";
 
         $client = static::createClient();
         $container = static::getContainer();
 
         $entityManager = $container->get(EntityManagerInterface::class);
 
-        $testStatus = new ImportStatus($username, $vm_name, $vmid);
-        $testStatus->setErrorOccurred($error_occurred);
-        $testStatus->setComplete($complete);
+        $testStatus = new ImportStatus($username, $vm_name);
+        $testStatus->setComplete();
+        $testStatus->setVmid($vmid);
         $entityManager->persist($testStatus);
         $entityManager->flush();
 
@@ -64,8 +61,7 @@ class ImportStatusControllerTest extends WebTestCase {
         $this->assertSame(1, \count($importStatusResponseData));
         $this->assertSame($vm_name, $importStatusResponseData[0]["vm_name"]);
         $this->assertSame($vmid, $importStatusResponseData[0]["vmid"]);
-        $this->assertSame($error_occurred, $importStatusResponseData[0]["error_occurred"]);
-        $this->assertSame($complete, $importStatusResponseData[0]["complete"]);
+        $this->assertSame($state, $importStatusResponseData[0]["state"]);
 
         $finishedStatus = $entityManager->getRepository(ImportStatus::class)->findOneby([ "vmid" => $vmid ]);
         $this->assertNull($finishedStatus, "complete status should not exist after being fetched");
@@ -75,18 +71,17 @@ class ImportStatusControllerTest extends WebTestCase {
         $username = "test@pam";
         $vm_name = "testvm";
         $vmid = 100;
-        $error_occurred = true;
+        $state = "error";
         $error_message = "error occurred";
-        $complete = false;
 
         $client = static::createClient();
         $container = static::getContainer();
 
         $entityManager = $container->get(EntityManagerInterface::class);
 
-        $testStatus = new ImportStatus($username, $vm_name, $vmid);
-        $testStatus->setErrorOccurred($error_occurred);
-        $testStatus->setComplete($complete);
+        $testStatus = new ImportStatus($username, $vm_name);
+        $testStatus->setErrorOccurred();
+        $testStatus->setVmid($vmid);
         $testStatus->setErrorMessage($error_message);
         $entityManager->persist($testStatus);
         $entityManager->flush();
@@ -98,8 +93,7 @@ class ImportStatusControllerTest extends WebTestCase {
         $this->assertSame(1, \count($importStatusResponseData));
         $this->assertSame($vm_name, $importStatusResponseData[0]["vm_name"]);
         $this->assertSame($vmid, $importStatusResponseData[0]["vmid"]);
-        $this->assertSame($error_occurred, $importStatusResponseData[0]["error_occurred"]);
-        $this->assertSame($complete, $importStatusResponseData[0]["complete"]);
+        $this->assertSame($state, $importStatusResponseData[0]["state"]);
 
         $finishedStatus = $entityManager->getRepository(ImportStatus::class)->findOneby([ "vmid" => $vmid ]);
         $this->assertNull($finishedStatus, "failed status should not exist after being fetched");
@@ -109,22 +103,21 @@ class ImportStatusControllerTest extends WebTestCase {
         $username = "test@pam";
         $vm_name = "testvm";
         $vmid = 100;
-        $error_occurred = false;
-        $complete = false;
+        $state = "importing";
 
         $client = static::createClient();
         $container = static::getContainer();
 
         $entityManager = $container->get(EntityManagerInterface::class);
 
-        $testStatus = new ImportStatus($username, $vm_name, $vmid);
-        $testStatus->setErrorOccurred($error_occurred);
-        $testStatus->setComplete($complete);
+        $testStatus = new ImportStatus($username, $vm_name);
+        $testStatus->setImporting();
+        $testStatus->setVmid($vmid);
         $entityManager->persist($testStatus);
 
-        $otherUserStatus = new ImportStatus("other@pam", "other_vm", 200);
-        $otherUserStatus->setErrorOccurred(false);
-        $otherUserStatus->setComplete(false);
+        $otherUserStatus = new ImportStatus("other@pam", "other_vm");
+        $otherUserStatus->setImporting();
+        $otherUserStatus->setVmid(200);
         $entityManager->persist($otherUserStatus);
 
         $entityManager->flush();
@@ -136,8 +129,7 @@ class ImportStatusControllerTest extends WebTestCase {
         $this->assertSame(1, \count($importStatusResponseData));
         $this->assertSame($vm_name, $importStatusResponseData[0]["vm_name"]);
         $this->assertSame($vmid, $importStatusResponseData[0]["vmid"]);
-        $this->assertSame($error_occurred, $importStatusResponseData[0]["error_occurred"]);
-        $this->assertSame($complete, $importStatusResponseData[0]["complete"]);
+        $this->assertSame($state, $importStatusResponseData[0]["state"]);
     }
 }
 ?>
