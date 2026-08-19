@@ -23,7 +23,6 @@ class DiskImportMessageHandler {
         $filesystem = new Filesystem();
         $status = $this->entityManager->getRepository(ImportStatus::class)->find($message->importStatusId);
         $client = $this->pveClientFactory->fromInfo($message->clientInfo);
-        $nodeName = strtok(gethostname(), '.');
 
         $filePath = $message->filePath;
         $origFilePath = $filePath;
@@ -34,8 +33,6 @@ class DiskImportMessageHandler {
             $this->entityManager->flush();
 
             $filesystem->remove($origFilePath);
-
-            $client->api('DELETE', '/nodes/' . $nodeName . '/qemu/' . $message->vmId, []);
             return;
         }
 
@@ -51,8 +48,6 @@ class DiskImportMessageHandler {
 
                 $filesystem->remove($origFilePath);
                 $filesystem->remove($zipDestPath);
-
-                $client->api('DELETE', '/nodes/' . $nodeName . '/qemu/' . $message->vmId, []);
                 return;
             }
             $zip->close();
@@ -76,8 +71,6 @@ class DiskImportMessageHandler {
 
                 $filesystem->remove($origFilePath);
                 $filesystem->remove($zipDestPath);
-
-                $client->api('DELETE', '/nodes/' . $nodeName . '/qemu/' . $message->vmId, []);
                 return;
             }
 
@@ -98,8 +91,6 @@ class DiskImportMessageHandler {
             $status->setErrorOccurred();
             $status->setErrorMessage("qm disk import command failed: " . $process->getErrorOutput());
             $this->entityManager->flush();
-
-            $client->api('DELETE', '/nodes/' . $nodeName . '/qemu/' . $message->vmId, []);
             return;
         }
 
