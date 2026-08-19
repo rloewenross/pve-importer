@@ -1,4 +1,7 @@
 <?php
+// SPDX-License-Identifier: GPL-3.0-or-later
+// PVE-Importer Copyright (C) 2026 Robbie Loewen-Ross
+
 namespace App\MessageHandler;
 
 use App\Message\DiskImportMessage;

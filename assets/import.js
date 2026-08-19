@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// PVE-Importer Copyright (C) 2026 Robbie Loewen-Ross
+
 import * as tus from 'tus-js-client';
 
 var fileInput = document.getElementById("file-input");
