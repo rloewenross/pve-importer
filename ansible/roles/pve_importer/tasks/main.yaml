@@ -61,6 +61,24 @@
   become: true
   become_user: "{{ pve_importer_unix_user }}"
 
+- name: Get PVE-Importer version # noqa: command-instead-of-module risky-shell-pipe
+  ansible.builtin.shell:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: git tag --list --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -n 1
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_version_tag
+  changed_when: false
+
+- name: Get PVE-Importer git commit hash
+  ansible.builtin.command:
+    chdir: "{{ pve_importer_install_path }}"
+    cmd: git rev-parse --short HEAD
+  become: true
+  become_user: "{{ pve_importer_unix_user }}"
+  register: pve_importer_git_hash
+  changed_when: false
+
 - name: Ensure upload directory exists
   ansible.builtin.file:
     path: "{{ pve_importer_upload_dir }}"
