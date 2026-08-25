@@ -22,6 +22,15 @@
             <div class="file-input-container" >
                 <label for="file-input">Upload VM image</label>
                 <input type="file" id="file-input" url="{{ path('tus_post') }}">
+                <div id="pool-input-container">
+                    <select id="pool-input">
+                        <option value="" selected>-- None --</option>
+                        {% for pool in pools %}
+                            <option value="{{ pool }}">{{ pool }}</option>
+                        {% endfor %}
+                    </select>
+                    <p id="pool-input-label">Select pool</p>
+                </div>
                 <button type="button" id="file-submit">Submit</button>
                 <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
                 <p id="message"></p>
