@@ -9,7 +9,7 @@ var message = document.getElementById("message");
 var fileProgress = document.getElementById("file-progress");
 var uploadStatus = document.getElementById("upload-status");
 const importStatusEndpoint = document.getElementById("import-status").getAttribute("url");
-var selectedPool = document.getElementBiId("pool-input");
+var selectedPool = document.getElementById("pool-input");
 
 // Source - https://stackoverflow.com/a/18650828
 // Posted by anon, modified by community. See post 'Timeline' for change history
