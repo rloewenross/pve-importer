@@ -79,23 +79,13 @@ class PveClient {
     }
 
     public function getFreeVmid(): int {
-        $resourcesResponse = $this->api('GET', '/cluster/resources', [ 'type' => 'vm' ]);
-        $resources = $resourcesResponse->toArray()['data'];
-        $vmids = array();
-        foreach ($resources as $resource) {
-            $vmid = $resource['vmid'];
-            array_push($vmids, $vmid);
-        }
-        sort($vmids, SORT_NUMERIC);
+        $newidResponse = $this->api('GET', '/cluster/nextid', []);
 
-        $newid = 100;
-        foreach ($vmids as $vmid) {
-            if ($newid == $vmid) {
-                $newid += 1;
-            }
+        if ($newidResponse->getStatusCode() !== 200) {
+            throw new \RuntimeException('Failed to get next vmid');
         }
 
-        return $newid;
+        return $newidResponse->toArray()['data'];
     }
 
     public function toInfo(): PveClientInfo {
