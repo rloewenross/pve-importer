@@ -14,6 +14,7 @@ class DiskUploadMessage {
         public string $vmName,
         public PveClientInfo $clientInfo,
         public int $statusId,
+        public string $pool,
     ) {}
 }
 ?>
