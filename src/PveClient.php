@@ -131,13 +131,19 @@ class PveClient {
     }
 
     public function getPools(): array {
-        $pools = $this->api('GET', '/pools', []);
+        $poolResponse = $this->api('GET', '/pools', []);
 
-        if ($pools->getStatusCode() !== 200) {
+        if ($poolResponse->getStatusCode() !== 200) {
             throw new \RuntimeException('Failed to get pools');
         }
 
-        return $pools->toArray()['data'];
+        $poolResponseData = $poolResponse->toArray()['data'];
+        $pools = [];
+        foreach ($poolResponseData as $poolParams) {
+            array_push($pools, $poolParams['poolid']);
+        }
+
+        return $pools;
     }
 }
 ?>
