@@ -19,7 +19,10 @@ class ImportController extends AbstractController {
         $client = $this->pveClientFactory->fromSession($session);
         $session->save();
 
-        return $this->render('import.html.twig', [ 'pools' => $client->getPools() ]);
+        return $this->render('import.html.twig', [
+            'pools' => $client->getPools(),
+            'storages' => $client->getStorages(),
+        ]);
     }
 }
 ?>

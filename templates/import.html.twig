@@ -31,6 +31,14 @@
                     </select>
                     <p id="pool-input-label">Select pool</p>
                 </div>
+                <div id="storage-input-container">
+                    <select id="storage-input">
+                        {% for storage in storages %}
+                            <option value="{{ storage }}">{{ storage }}</option>
+                        {% endfor %}
+                    </select>
+                    <p id="storage-input-label">Select storage</p>
+                </div>
                 <button type="button" id="file-submit">Submit</button>
                 <progress id="file-progress" style="display: none;"></progress><p id="upload-status"></p>
                 <p id="message"></p>

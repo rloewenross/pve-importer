@@ -135,5 +135,21 @@ class PveClient {
 
         return $pools;
     }
+
+    public function getStorages(): array {
+        $storagesResponse = $this->api('GET', '/storage', []);
+
+        if ($storagesResponse->getStatusCode() !== 200) {
+            throw new \RuntimeException('Failed to get storages');
+        }
+
+        $storagesResponseData = $storagesResponse->toArray()['data'];
+        $storages = [];
+        foreach ($storagesResponseData as $storageParams) {
+            array_push($storages, $storageParams['storage']);
+        }
+
+        return $storages;
+    }
 }
 ?>
