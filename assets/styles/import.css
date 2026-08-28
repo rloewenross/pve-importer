@@ -1,10 +1,17 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /* PVE-Importer Copyright (C) 2026 Robbie Loewen-Ross */
 
-#logout {
+#top-left-corner-container {
     position: absolute;
     top: 0.4rem;
     left: 0.4rem;
+}
+
+#username {
+    color: var(--secondary-text);
+}
+
+#logout {
     border: 2px solid;
     border-radius: 4px;
     padding: 0.2rem;

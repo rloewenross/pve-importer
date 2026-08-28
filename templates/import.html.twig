@@ -14,7 +14,10 @@
 {% endblock %}
 
 {% block body %}
-    <a href="/logout" id="logout">Log out</a>
+    <div id="top-left-corner-container">
+        <p id="username">{{ username }}</p>
+        <a href="/logout" id="logout">Log out</a>
+    </div>
 
     <div class="import-layout">
         <div class="content">
