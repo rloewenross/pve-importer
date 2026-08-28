@@ -146,11 +146,11 @@ var finishedStatusList = [];
 var stopStatus = false;
 
 function loadImportStatus() {
-    fetch(statusEndpoint, { redirect: 'manual' })
+    fetch(statusEndpoint)
     .then(function (response) {
-        if (response.status === 302) {
+        if (response.redirected) {
             stopStatus = true;
-            const location = response.headers.get('Location');
+            const location = response.url;
 
             if (location) {
                 window.location.assign(location);

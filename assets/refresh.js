@@ -4,11 +4,11 @@
 var stopRefresh = false;
 
 function callRefresh() {
-    fetch('/refresh', { method: 'POST', redirect: 'manual' })
+    fetch('/refresh', { method: 'POST' })
     .then(function (response) {
-        if (response.status === 302) {
+        if (response.redirected) {
             stopRefresh = true;
-            const location = response.headers.get('Location');
+            const location = response.url;
 
             if (location) {
                 window.location.assign(location);
