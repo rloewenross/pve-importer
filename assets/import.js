@@ -145,8 +145,16 @@ function createImportCard(statusInfo) {
 var finishedStatusList = [];
 
 function loadImportStatus() {
-    fetch(statusEndpoint)
+    fetch(statusEndpoint, { redirect: 'manual' })
     .then(function (response) {
+        if (response.status === 302) {
+            const location = response.headers.get('Location');
+
+            if (location) {
+                window.location.assign(location);
+            }
+        }
+
         return response.json();
     })
     .then(function (data) {
