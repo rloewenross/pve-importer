@@ -56,7 +56,7 @@ class DiskUploadMessageHandler {
         $this->entityManager->flush();
 
         if (!$importStatus->isErrorOccurred()) {
-            $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $message->statusId));
+            $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $message->statusId, $message->storage));
         }
     }
 }
