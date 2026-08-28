@@ -22,10 +22,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\PveClientFactory:
-        arguments:
-            $pveStorage: '%env(PROXMOX_STORAGE)%'
-
     TusPhp\Cache\FileStore:
         class: TusPhp\Cache\FileStore
         arguments:
