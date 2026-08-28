@@ -152,7 +152,7 @@ function loadImportStatus() {
             stopStatus = true;
             const location = response.url;
 
-            if (location) {
+            if (window.location.href !== location) {
                 window.location.assign(location);
             }
         }

@@ -10,7 +10,7 @@ function callRefresh() {
             stopRefresh = true;
             const location = response.url;
 
-            if (location) {
+            if (window.location.href !== location) {
                 window.location.assign(location);
             }
         }
