@@ -23,6 +23,7 @@ class ImportController extends AbstractController {
 
         try {
             $response = $this->render('import.html.twig', [
+                'username' => $client->username,
                 'pools' => $client->getPools(),
                 'storages' => $client->getStorages(),
             ]);
