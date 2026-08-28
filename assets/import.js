@@ -143,11 +143,13 @@ function createImportCard(statusInfo) {
 }
 
 var finishedStatusList = [];
+var stopStatus = false;
 
 function loadImportStatus() {
     fetch(statusEndpoint, { redirect: 'manual' })
     .then(function (response) {
         if (response.status === 302) {
+            stopStatus = true;
             const location = response.headers.get('Location');
 
             if (location) {
@@ -198,7 +200,9 @@ function loadImportStatus() {
         console.error("Unable to load import statuses:", e);
     })
     .finally(function () {
-        setTimeout(loadImportStatus, 5000);
+        if (!stopStatus) {
+            setTimeout(loadImportStatus, 5000);
+        }
     });
 }
 
