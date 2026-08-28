@@ -7,8 +7,10 @@ namespace App\Controller;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use App\PveClientFactory;
+use App\PveInvalidTicketException;
 
 class ImportController extends AbstractController {
     public function __construct(private PveClientFactory $pveClientFactory) {}
@@ -19,7 +21,16 @@ class ImportController extends AbstractController {
         $client = $this->pveClientFactory->fromSession($session);
         $session->save();
 
-        return $this->render('import.html.twig', [ 'pools' => $client->getPools() ]);
+        try {
+            $response = $this->render('import.html.twig', [
+                'pools' => $client->getPools(),
+                'storages' => $client->getStorages(),
+            ]);
+        } catch (PveInvalidTicketException $e) {
+            return new RedirectResponse($this->generateUrl('login'));
+        }
+
+        return $response;
     }
 }
 ?>

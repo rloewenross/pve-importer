@@ -10,6 +10,7 @@ var fileProgress = document.getElementById("file-progress");
 var uploadStatus = document.getElementById("upload-status");
 const importStatusEndpoint = document.getElementById("import-status").getAttribute("url");
 var selectedPool = document.getElementById("pool-input");
+var selectedStorage = document.getElementById("storage-input");
 
 // Source - https://stackoverflow.com/a/18650828
 // Posted by anon, modified by community. See post 'Timeline' for change history
@@ -55,6 +56,7 @@ document.getElementById("file-submit").addEventListener("click", function() {
           filename: file.name,
           filetype: file.type,
           pool: selectedPool.value,
+          storage: selectedStorage.value,
         },
 
         onError: function (error) {
@@ -141,10 +143,20 @@ function createImportCard(statusInfo) {
 }
 
 var finishedStatusList = [];
+var stopStatus = false;
 
 function loadImportStatus() {
     fetch(statusEndpoint)
     .then(function (response) {
+        if (response.redirected) {
+            stopStatus = true;
+            const location = response.url;
+
+            if (window.location.href !== location) {
+                window.location.assign(location);
+            }
+        }
+
         return response.json();
     })
     .then(function (data) {
@@ -188,7 +200,9 @@ function loadImportStatus() {
         console.error("Unable to load import statuses:", e);
     })
     .finally(function () {
-        setTimeout(loadImportStatus, 5000);
+        if (!stopStatus) {
+            setTimeout(loadImportStatus, 5000);
+        }
     });
 }
 

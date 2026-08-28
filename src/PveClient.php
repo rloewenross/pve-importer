@@ -58,7 +58,7 @@ class PveClient {
     /**
      * @param mixed[] $data
      */
-    public function api(string $method, string $path, array $data): ResponseInterface {
+    public function api(string $method, string $path, array $data, bool $checkTicket = true): ResponseInterface {
         $options = [
                 'headers' => [
                     'CSRFPreventionToken' => $this->csrf,
@@ -71,11 +71,17 @@ class PveClient {
             $options['json'] = $data;
         }
 
-        return $this->httpClient->request(
+        $response = $this->httpClient->request(
             $method,
             'https://localhost:8006/api2/json' . $path,
             $options,
         );
+
+        if ($checkTicket && $response->getStatusCode() !== 200 && !$this->verifyTicket()) {
+            throw new PveInvalidTicketException();
+        }
+
+        return $response;
     }
 
     public function getFreeVmid(): int {
@@ -135,5 +141,42 @@ class PveClient {
 
         return $pools;
     }
+
+    public function getStorages(): array {
+        $storagesResponse = $this->api('GET', '/storage', []);
+
+        if ($storagesResponse->getStatusCode() !== 200) {
+            throw new \RuntimeException('Failed to get storages');
+        }
+
+        $storagesResponseData = $storagesResponse->toArray()['data'];
+        $storages = [];
+        foreach ($storagesResponseData as $storageParams) {
+            array_push($storages, $storageParams['storage']);
+        }
+
+        return $storages;
+    }
+
+    /**
+     * returns true on valid ticket, false otherwise
+     * @throws \RuntimeException
+     * @return bool
+     */
+    private function verifyTicket(): bool {
+        $versionResponse = $this->api('GET', '/version', [], false);
+        if ($versionResponse->getStatusCode() === 401) {
+            return false;
+        } elseif ($versionResponse->getStatusCode() !== 200) {
+            throw new \RuntimeException('Failed to verify ticket');
+        } else {
+            return true;
+        }
+    }
 }
-?>
+
+class PveInvalidTicketException extends \RuntimeException {
+    public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null) {
+        parent::__construct(\strlen($message) !== 0 ? $message : "Invalid PVE ticket, ticket has possibly expired", $code, $previous);
+    }
+}

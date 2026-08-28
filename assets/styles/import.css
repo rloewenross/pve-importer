@@ -166,3 +166,20 @@
     margin: 0;
     margin-left: 0.3rem;
 }
+
+#storage-input-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#storage-input {
+    background-color: var(--primary);
+    color: var(--background);
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+}
+
+#storage-input-label {
+    margin: 0;
+    margin-left: 0.3rem;
+}
