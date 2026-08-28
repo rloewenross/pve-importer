@@ -58,7 +58,7 @@ class PveClient {
     /**
      * @param mixed[] $data
      */
-    public function api(string $method, string $path, array $data): ResponseInterface {
+    public function api(string $method, string $path, array $data, bool $checkTicket = true): ResponseInterface {
         $options = [
                 'headers' => [
                     'CSRFPreventionToken' => $this->csrf,
@@ -77,7 +77,7 @@ class PveClient {
             $options,
         );
 
-        if ($response->getStatusCode() !== 200 && !$this->verifyTicket()) {
+        if ($checkTicket && $response->getStatusCode() !== 200 && !$this->verifyTicket()) {
             throw new PveInvalidTicketException();
         }
 
@@ -164,7 +164,7 @@ class PveClient {
      * @return bool
      */
     private function verifyTicket(): bool {
-        $versionResponse = $this->api('GET', '/version', []);
+        $versionResponse = $this->api('GET', '/version', [], false);
         if ($versionResponse->getStatusCode() === 401) {
             return false;
         } elseif ($versionResponse->getStatusCode() !== 200) {
