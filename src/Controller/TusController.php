@@ -53,7 +53,8 @@ class TusController extends AbstractController {
             $entityManager->flush();
 
             $pool = $event->getFile()->details()['metadata']['pool'];
-            $bus->dispatch(new DiskUploadMessage($filePath, $vmName, $client->toInfo(), $importStatus->getId(), $pool));
+            $storage = $event->getFile()->details()['metadata']['storage'];
+            $bus->dispatch(new DiskUploadMessage($filePath, $vmName, $client->toInfo(), $importStatus->getId(), $pool, $storage));
         });
         return $server->serve();
     }

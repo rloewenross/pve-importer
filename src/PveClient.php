@@ -17,7 +17,6 @@ class PveClient {
 
     public function __construct(
         private HttpClientInterface $httpClient,
-        public string $pveStorage,
     ) {}
 
     public function login(
