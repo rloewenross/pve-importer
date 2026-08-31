@@ -1,10 +1,24 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 /* PVE-Importer Copyright (C) 2026 Robbie Loewen-Ross */
 
-#logout {
+#top-left-corner-container {
     position: absolute;
     top: 0.4rem;
     left: 0.4rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 0.3rem;
+}
+
+#username {
+    color: var(--secondary-text);
+    margin: 0;
+}
+
+#logout {
     border: 2px solid;
     border-radius: 4px;
     padding: 0.2rem;
@@ -148,4 +162,38 @@
     color: var(--text);
 
     font-size: 0.9rem;
+}
+
+#pool-input-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#pool-input {
+    background-color: var(--primary);
+    color: var(--background);
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+}
+
+#pool-input-label {
+    margin: 0;
+    margin-left: 0.3rem;
+}
+
+#storage-input-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#storage-input {
+    background-color: var(--primary);
+    color: var(--background);
+    border: 2px solid var(--primary);
+    border-radius: 4px;
+}
+
+#storage-input-label {
+    margin: 0;
+    margin-left: 0.3rem;
 }

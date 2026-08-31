@@ -1,2 +1,0 @@
-# www-data should be changed to the user that php-fpm will run as
-www-data ALL = (root) NOPASSWD: /usr/sbin/qm disk import * * * --target-disk scsi0

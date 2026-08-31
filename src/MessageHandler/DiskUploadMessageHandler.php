@@ -38,7 +38,14 @@ class DiskUploadMessageHandler {
         $this->entityManager->flush();
 
         try {
-            $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', ['vmid' => $newVmid, 'name' => $message->vmName]);
+            $createVmData = [
+                'vmid' => $newVmid,
+                'name' => $message->vmName,
+            ];
+            if (\strlen($message->pool) > 0) {
+                \array_push($createVmData, $message->pool);
+            }
+            $createVmResponse = $client->api('POST', '/nodes/' . $nodeName . '/qemu', $createVmData);
 
             if ($createVmResponse->getStatusCode() != 200) {
                 $importStatus->setErrorOccurred();
@@ -52,7 +59,7 @@ class DiskUploadMessageHandler {
         $this->entityManager->flush();
 
         if (!$importStatus->isErrorOccurred()) {
-            $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $message->statusId));
+            $this->bus->dispatch(new DiskImportMessage($newVmid, $message->path, $client->toInfo(), $message->statusId, $message->storage));
         }
     }
 }

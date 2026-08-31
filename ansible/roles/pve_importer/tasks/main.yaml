@@ -5,6 +5,7 @@
   ansible.builtin.package:
     name:
       - sudo
+      - git
       - php8.4-fpm
       - php8.4-mysql
       - php8.4-xml

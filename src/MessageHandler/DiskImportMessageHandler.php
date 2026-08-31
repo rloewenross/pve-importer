@@ -30,9 +30,18 @@ class DiskImportMessageHandler {
         $filePath = $message->filePath;
         $origFilePath = $filePath;
 
-        if (!$client->checkPermission("/storage/" . $client->pveStorage, "Datastore.Allocate")) {
+        try {
+            if (!$client->checkPermission("/storage/" . $message->storage, "Datastore.Allocate")) {
+                $status->setErrorOccurred();
+                $status->setErrorMessage("Missing permissions to allocate data");
+                $this->entityManager->flush();
+
+                $filesystem->remove($origFilePath);
+                return;
+            }
+        } catch (\Exception $e) {
             $status->setErrorOccurred();
-            $status->setErrorMessage("Missing permissions to allocate data");
+            $status->setErrorMessage($e->getMessage());
             $this->entityManager->flush();
 
             $filesystem->remove($origFilePath);
@@ -80,7 +89,7 @@ class DiskImportMessageHandler {
             $isZip = true;
         }
 
-        $process = new Process(['sudo', '-n', '/usr/sbin/qm', 'disk', 'import', $message->vmId, $filePath, $client->pveStorage, '--target-disk', 'scsi0']);
+        $process = new Process(['sudo', '-n', '/usr/sbin/qm', 'disk', 'import', $message->vmId, $filePath, $message->storage, '--target-disk', 'scsi0']);
         $process->setTimeout(null);
         $process->setIdleTimeout(600);
         $process->run();

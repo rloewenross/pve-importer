@@ -14,6 +14,7 @@ class DiskImportMessage {
         public string $filePath,
         public PveClientInfo $clientInfo,
         public int $importStatusId,
+        public string $storage,
     ) {}
 }
 ?>
